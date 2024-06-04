@@ -112,7 +112,7 @@ const Login = () => {
         <div className="privacy-policy-modal">
           <div className="privacy-policy-content">
             <h2>Privacy Policy</h2>
-            <p>Your privacy policy content goes here.</p>
+            <p>We are committed to protecting your privacy. This policy outlines our practices regarding the collection, use, and sharing of your personal information. By using our service, you consent to the terms of this policy. We may update this policy from time to time, and any changes will be posted on this page. If you have any questions about our privacy practices, please contact us at [email address or contact information]</p>
             <button onClick={togglePrivacyPolicy}>Close</button>
           </div>
         </div>
