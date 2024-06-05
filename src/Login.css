@@ -21,38 +21,62 @@
 
 .login-form {
   position: relative;
-  width: 400px;
-  background: white;
+  width: 300px; /* Adjust width as needed */
+  height: 400px; /* Adjust height as needed */
+  background: rgba(255, 255, 255, 0.9); /* Adjust transparency */
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align contents to the top */
+  align-items: center; /* Center contents horizontally */
 }
 
-.login-step h2 {
-  margin-bottom: 20px;
-}
-
-.login-step p {
-  margin-bottom: 15px;
-}
-
-.login-step input {
+.login-step {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align contents to the top */
+}
+
+.login-step h2 { /* Sign in Heading */
+  margin-top: 20px; /* Reduce margin from the top */
+  margin-bottom: 20px;
+  font-size: 27px; /* Increase the font size */
+  font-weight: bold; /* Make the text bold */
+}
+
+.login-step p { /* Enter phone number to send the OTP */
+  margin-bottom: 15px;
+  margin-top: 60px; /* Reduce margin from the top */
+  margin-bottom: 0px;
+  font-size: 0x; /* Increase the font size */
+  font-weight: 0; /* Make the text bold */
+}
+
+.login-step input { /*Phone Number Input */
+  width: 95%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-top: 40px; /* Reduce margin from the top */
+  margin-bottom: 0px;
 }
 
-.login-step button {
-  width: 100%;
+.login-step button {/* Generate OTP */
+  width: 90%;
   padding: 10px;
   background: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 50px; /* Reduce margin from the top */
+  margin-bottom: 0px;
 }
 
 .login-step button:hover {
@@ -66,6 +90,8 @@
   color: #007bff;
   cursor: pointer;
   text-decoration: underline;
+  margin-top: 15px; /* Reduce margin from the top */
+  margin-bottom: 50px;
 }
 
 .privacy-policy-button:hover {
