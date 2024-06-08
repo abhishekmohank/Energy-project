@@ -89,7 +89,7 @@ const Login = () => {
         ) : (
           <div className="login-step">
             <h2>Sign in</h2>
-            <p>We have sent the verification code to your Phone number</p>
+            <p>Enter the verification code sent to your phone number</p>
             <input
               type="text"
               placeholder="OTP"
@@ -98,14 +98,9 @@ const Login = () => {
               maxLength="4"
             />
             <button onClick={handleConfirmOtp}>Confirm</button>
-            <p>
-              Resend in {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}
+            <p className={`resend-text ${timer === 0 ? 'active' : ''}`} onClick={handleResendOtp}>
+              {timer > 0 ? `Resend in ${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}` : 'Resend OTP'}
             </p>
-            {timer === 0 && (
-              <button onClick={handleResendOtp} className="resend-button">
-                Resend OTP
-              </button>
-            )}
           </div>
         )}
         <button className="privacy-policy-button" onClick={togglePrivacyPolicy}>

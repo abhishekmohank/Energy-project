@@ -53,11 +53,11 @@
   margin-bottom: 15px;
   margin-top: 60px; /* Reduce margin from the top */
   margin-bottom: 0px;
-  font-size: 0x; /* Increase the font size */
-  font-weight: 0; /* Make the text bold */
+  font-size: 16px; /* Increase the font size */
+  font-weight: normal; /* Remove bold text */
 }
 
-.login-step input { /*Phone Number Input */
+.login-step input { /* Phone Number Input and OTP Input */
   width: 95%;
   padding: 10px;
   margin-bottom: 15px;
@@ -67,7 +67,7 @@
   margin-bottom: 0px;
 }
 
-.login-step button {/* Generate OTP */
+.login-step button.confirm-button, .login-step button { /* Confirm Button and Generate OTP */
   width: 90%;
   padding: 10px;
   background: #007bff;
@@ -75,7 +75,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 50px; /* Reduce margin from the top */
+  margin-top: 50px; /* Adjust margin from the top */
   margin-bottom: 0px;
 }
 
@@ -142,21 +142,34 @@
 }
 
 .resend-button {
-  width: 100%;
-  padding: 10px;
-  background: #28a745;
-  color: white;
+  background: none;
   border: none;
-  border-radius: 5px;
+  color: #007bff;
   cursor: pointer;
-  margin-top: 15px;
+  text-decoration: underline;
+  margin-top: 15px; /* Adjust margin from the top */
+  margin-bottom: 15px; /* Adjust margin from the bottom */
 }
 
 .resend-button:hover {
-  background: #218838;
+  color: #ff0505;
 }
 
 .logo {
   width: 150px;
   margin-bottom: 20px;
+}
+
+/* Additional styling for "Resend in" text */
+.resend-text {
+  margin-top: 15px; /* Adjust margin from the top */
+  margin-bottom: 15px; /* Adjust margin from the bottom */
+  font-size: 14px; /* Adjust font size */
+  color: #000; /* Adjust color as needed */
+}
+
+.resend-text.active {
+  color: #ff0505;
+  text-decoration: underline;
+  cursor: pointer;
 }
