@@ -1,12 +1,10 @@
-// src/App.js
 import React from 'react';
-import Login from './Login';
-import './App.css';
+import AppRouter from './AppRouter';
 
 function App() {
   return (
     <div className="App">
-      <Login />
+      <AppRouter />
     </div>
   );
 }

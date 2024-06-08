@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -7,6 +8,7 @@ const Login = () => {
   const [otp, setOtp] = useState('');
   const [timer, setTimer] = useState(180); // 3 minutes
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const navigate = useNavigate(); // Use useNavigate hook
 
   useEffect(() => {
     let interval;
@@ -47,6 +49,8 @@ const Login = () => {
   const handleConfirmOtp = () => {
     if (otp.length === 4) {
       // Handle OTP confirmation logic here
+      // Assuming OTP is correct
+      navigate('/dashboard'); // Redirect to dashboard
     } else {
       alert("OTP must be exactly 4 digits");
     }
