@@ -1,106 +1,125 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Grid, Paper, Typography, Box } from '@mui/material';
-import axios from 'axios'; // Assuming you use axios for backend API calls
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Container, Grid, Paper, Typography, Box, Button } from '@mui/material';
+import './Dashboard.css'; // Import the CSS file for styling
 
 const Dashboard = () => {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  // State to store dashboard data
+  const [dashboardData, setDashboardData] = useState({
+    pvVoltage: '',
+    pvCurrent: '',
+    pvPower: '',
+    acVoltage: '',
+    acCurrent: '',
+    acPower: '',
+    currentPvPower: '',
+    currentAcOutput: '',
+    totalOperationTime: '',
+    inverterTemperature: '',
+    productionToday: '',
+    productionThisMonth: '',
+    productionThisYear: '',
+    lifetimeProduction: '',
+    plantType: '',
+    onGridDate: '',
+    totalInstalledCapacity: '',
+    address: '',
+    deviceStatus: '',
+    deviceName: '',
+    serialNumber: '',
+    deviceType: '',
+    ratedPower: '',
+    communicationMode: '',
+    lastUpdated: '',
+  });
 
+  // State to handle loading state
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data from backend when component mounts
   useEffect(() => {
-    // Fetch dashboard data from backend
-    axios.get('/api/dashboard')
-      .then(response => {
-        console.log('Dashboard data fetched successfully:', response.data); // Debug log
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/dashboard');
         setDashboardData(response.data);
-        setLoading(false); // Set loading to false after data is fetched
-      })
-      .catch(error => {
+        setLoading(false);
+      } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        setLoading(false); // Set loading to false even if there is an error
-      });
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
+  // Show loading spinner while data is being fetched
   if (loading) {
-    return <div>Loading...</div>; // Loading state
+    return <div>Loading...</div>;
   }
-
-  if (!dashboardData) {
-    return <div>No data available</div>; // No data state
-  }
-
-  const { basicInfo, realTimeInfo, powerProduction, pvSide, acSide } = dashboardData;
-  const currentDate = new Date().toLocaleString(); // Get current date and time
 
   return (
-    <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Dashboard
-      </Typography>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6">
-          ATRIA UNIVERSITY-ARPL-2024-24-ABP-01 | OGS 3.3K
+    <Container className="container">
+      {/* Header section */}
+      <Box className="header">
+        <img src="logo.png" alt="Atria Power" className="logo" />
+        <Typography variant="h4" component="h1" className="header-title">
+          ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
-        <Typography variant="body1">
-          Last updated: {currentDate}
-        </Typography>
+        <Button variant="contained" className="signout-button">
+          Sign Out
+        </Button>
       </Box>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} style={{ padding: '16px' }}>
-            <Typography variant="h6" gutterBottom>
-              Basic Info
-            </Typography>
-            <Typography variant="body2">Device Status: {basicInfo.deviceStatus}</Typography>
-            <Typography variant="body2">Device Name: {basicInfo.deviceName}</Typography>
-            <Typography variant="body2">SN: {basicInfo.sn}</Typography>
-            <Typography variant="body2">Check Code: {basicInfo.checkCode}</Typography>
-            <Typography variant="body2">Device Model: {basicInfo.deviceModel}</Typography>
-            <Typography variant="body2">Device Type: {basicInfo.deviceType}</Typography>
-            <Typography variant="body2">Rated Power: {basicInfo.ratedPower} kW</Typography>
-            <Typography variant="body2">Communication Mode: {basicInfo.communicationMode}</Typography>
-            <Typography variant="body2">Slave Firmware Version: {basicInfo.slaveFirmwareVersion}</Typography>
+
+      {/* Metrics section */}
+      <Grid container spacing={3} className="metrics-container">
+        {[
+          { label: "Current PV Power", value: dashboardData.currentPvPower + " kW" },
+          { label: "Current AC Output", value: dashboardData.currentAcOutput + " kW" },
+          { label: "Total Operation Time", value: dashboardData.totalOperationTime + " hrs" },
+          { label: "Inverter Temperature", value: dashboardData.inverterTemperature + " °C" },
+          { label: "Production Today", value: dashboardData.productionToday + " kWh" },
+          { label: "Production - This Month", value: dashboardData.productionThisMonth + " kWh" },
+          { label: "Production - This Year", value: dashboardData.productionThisYear + " kWh" },
+          { label: "Lifetime Production", value: dashboardData.lifetimeProduction + " kWh" },
+        ].map((metric, index) => (
+          <Grid item xs={12} sm={6} md={3} key={index}>
+            <Paper className="metric-box">
+              <Typography variant="h6">{metric.value}</Typography>
+              <Typography variant="body1">{metric.label}</Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Information section */}
+      <Grid container spacing={3} className="info-container">
+        <Grid item xs={12} sm={6}>
+          <Paper className="info-box">
+            <Typography variant="h6">Performance Metrics</Typography>
+            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+            <Typography variant="body1">PV Voltage(V): {dashboardData.pvVoltage}</Typography>
+            <Typography variant="body1">PV Current(A): {dashboardData.pvCurrent}</Typography>
+            <Typography variant="body1">PV Power(kW): {dashboardData.pvPower}</Typography>
+            <Typography variant="body1">AC Voltage(V): {dashboardData.acVoltage}</Typography>
+            <Typography variant="body1">AC Current(A): {dashboardData.acCurrent}</Typography>
+            <Typography variant="body1">AC Power(kW): {dashboardData.acPower}</Typography>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} style={{ padding: '16px' }}>
-            <Typography variant="h6" gutterBottom>
-              Real-time Info
-            </Typography>
-            <Typography variant="body2">Export Limit: {realTimeInfo.exportLimit}</Typography>
-            <Typography variant="body2">Total Operation Time: {realTimeInfo.totalOperationTime} H</Typography>
-            <Typography variant="body2">Inverter Temperature: {realTimeInfo.inverterTemperature} °C</Typography>
-            <Typography variant="body2">Grid Frequency: {realTimeInfo.gridFrequency} Hz</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} style={{ padding: '16px' }}>
-            <Typography variant="h6" gutterBottom>
-              Power / Production
-            </Typography>
-            <Typography variant="body2">Current Power: {powerProduction.currentPower} W</Typography>
-            <Typography variant="body2">Daily Generation: {powerProduction.dailyGeneration} kWh</Typography>
-            <Typography variant="body2">Monthly Generation: {powerProduction.monthlyGeneration} kWh</Typography>
-            <Typography variant="body2">Production Total: {powerProduction.productionTotal} kWh</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} style={{ padding: '16px' }}>
-            <Typography variant="h6" gutterBottom>
-              PV Side
-            </Typography>
-            <Typography variant="body2">Voltage (V): {pvSide.voltage}</Typography>
-            <Typography variant="body2">Current (A): {pvSide.current}</Typography>
-            <Typography variant="body2">Power (kW): {pvSide.power}</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} style={{ padding: '16px' }}>
-            <Typography variant="h6" gutterBottom>
-              AC Side
-            </Typography>
-            <Typography variant="body2">Voltage (V): {acSide.voltage}</Typography>
-            <Typography variant="body2">Current (A): {acSide.current}</Typography>
-            <Typography variant="body2">Power (kW): {acSide.power}</Typography>
+
+        <Grid item xs={12} sm={6}>
+          <Paper className="info-box">
+            <Typography variant="h6">General Information</Typography>
+            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+            <Typography variant="body1">Plant type: {dashboardData.plantType}</Typography>
+            <Typography variant="body1">On-Grid Date: {dashboardData.onGridDate}</Typography>
+            <Typography variant="body1">Total Installed Capacity: {dashboardData.totalInstalledCapacity}</Typography>
+            <Typography variant="body1">Address: {dashboardData.address}</Typography>
+            <Typography variant="body1">Device Status: {dashboardData.deviceStatus}</Typography>
+            <Typography variant="body1">Device Name: {dashboardData.deviceName}</Typography>
+            <Typography variant="body1">Serial Number: {dashboardData.serialNumber}</Typography>
+            <Typography variant="body1">Device Type: {dashboardData.deviceType}</Typography>
+            <Typography variant="body1">Rated Power: {dashboardData.ratedPower}</Typography>
+            <Typography variant="body1">Communication Mode: {dashboardData.communicationMode}</Typography>
           </Paper>
         </Grid>
       </Grid>
