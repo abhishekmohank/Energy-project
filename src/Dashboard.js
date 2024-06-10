@@ -36,20 +36,55 @@ const Dashboard = () => {
   // State to handle loading state
   const [loading, setLoading] = useState(true);
 
-  // Fetch data from backend when component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/dashboard');
-        setDashboardData(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        setLoading(false);
-      }
-    };
+  // Fetch data from backend
+  const fetchData = async () => {
+    try {
+      
+      const response = await axios.get('http://localhost:5001/api/dashboard');
+      
+      const data = response.data;
 
+      // Map API response to state
+      setDashboardData({
+        pvVoltage: data.Vpv1,
+        pvCurrent: data.Ipv1,
+        pvPower: data.Pac,
+        acVoltage: data.Vgrid_PhaseA,
+        acCurrent: data.Igrid_PhaseA,
+        acPower: data.Pac,
+        currentPvPower: data.Pac,
+        currentAcOutput: data.PmeterTotal,
+        totalOperationTime: data.TimeTotal,
+        inverterTemperature: data.Temperature1,
+        productionToday: data.Eday,
+        productionThisMonth: 'N/A',  
+        productionThisYear: 'N/A', 
+        lifetimeProduction: data.Etotal,
+        plantType: data.ModelType,
+        onGridDate: 'N/A', 
+        totalInstalledCapacity: 'N/A', 
+        address: 'N/A', 
+        deviceStatus: data.WorkStatus,
+        deviceName: 'N/A', 
+        serialNumber: data.INV_SN,
+        deviceType: data.ModelType,
+        ratedPower: 'N/A', 
+        communicationMode: 'N/A', 
+        lastUpdated: data.CreationDate,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
+    const interval = setInterval(fetchData, 5000);
+
+    return () => clearInterval(interval); 
   }, []);
 
   // Show loading spinner while data is being fetched
