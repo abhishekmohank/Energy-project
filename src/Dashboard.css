@@ -22,6 +22,7 @@
 .signout-button {
   background-color: white;
   color: red;
+  margin-top: 10px;
 }
 
 /* Styling for the containers holding metrics and information */
@@ -56,22 +57,22 @@
 /* Media queries for responsive design */
 @media (min-width: 600px) {
   .header {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
   }
 
   .header-title {
-    margin: 0;
+      margin: 0;
   }
 
   .signout-button {
-    width: auto;
-    margin-top: 0;
+      width: auto;
+      margin-top: 0;
   }
 }
 
-/* Styles for the floating WhatsApp icon */
+/* WhatsApp floating button styling */
 .whatsapp-float {
   position: fixed;
   width: 60px;
@@ -82,7 +83,6 @@
   color: #fff;
   border-radius: 50px;
   text-align: center;
-  font-size: 30px;
   box-shadow: 2px 2px 3px #999;
   z-index: 1000;
   display: flex;
@@ -91,6 +91,5 @@
 }
 
 .whatsapp-float:hover {
-  background-color: #22bb58;
-  color: white;
+  background-color: #128c7e;
 }
