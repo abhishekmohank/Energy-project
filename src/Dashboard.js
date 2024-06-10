@@ -40,17 +40,20 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Make an API request to get the dashboard data
         const response = await axios.get('http://localhost:5000/api/dashboard');
+        // Update the state with the fetched data 
+
         setDashboardData(response.data);
-        setLoading(false);
+        setLoading(false);// Set loading to false once data is fetched
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        setLoading(false);
+        setLoading(false);// Set loading to false in case of error
       }
     };
 
     fetchData();
-  }, []);
+  }, []);// Empty dependency array ensures this effect runs only once when the component mounts
 
   // Show loading spinner while data is being fetched
   if (loading) {
@@ -59,7 +62,7 @@ const Dashboard = () => {
 
   return (
     <Container className="container">
-      {/* Header section */}
+      {/* Header section containing logo, title, and sign-out button */}
       <Box className="header">
         <img src="logo.png" alt="Atria Power" className="logo" />
         <Typography variant="h4" component="h1" className="header-title">
@@ -70,7 +73,7 @@ const Dashboard = () => {
         </Button>
       </Box>
 
-      {/* Metrics section */}
+      {/* Grid container for displaying the metrics */}
       <Grid container spacing={3} className="metrics-container">
         {[
           { label: "Current PV Power", value: dashboardData.currentPvPower + " kW" },
@@ -91,7 +94,7 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      {/* Information section */}
+      {/* Grid container for displaying performance and general information */}
       <Grid container spacing={3} className="info-container">
         <Grid item xs={12} sm={6}>
           <Paper className="info-box">
@@ -106,6 +109,7 @@ const Dashboard = () => {
           </Paper>
         </Grid>
 
+        {/* General Information */}
         <Grid item xs={12} sm={6}>
           <Paper className="info-box">
             <Typography variant="h6">General Information</Typography>

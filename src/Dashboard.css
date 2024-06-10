@@ -9,60 +9,94 @@
     padding: 10px;
     color: white;
     text-align: center;
-  }
-  
-  /* Styling for the header title */
-  .header-title {
+}
+
+.header-title {
     margin: 10px 0;
-  }
-  
-  /* Styling for the logo */
-  .logo {
+}
+
+.logo {
     height: 50px;
-  }
-  
-  /* Styling for the sign-out button */
-  .signout-button {
+}
+
+.signout-button {
     background-color: white;
     color: red;
-  }
-  
-  /* Styling for the containers holding metrics and information */
-  .metrics-container, .info-container {
+    margin-top: 10px;
+}
+
+/* Styling for the containers holding metrics and information */
+.metrics-container, .info-container {
     margin-top: 20px;
-  }
-  
-  /* Styling for individual metric boxes */
-  .metric-box {
+    display: grid;
+    grid-gap: 20px;
+}
+
+.metrics-container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.info-container {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Styling for individual metric boxes */
+.metric-box {
     text-align: center;
     padding: 20px;
-  }
-  
-  /* Styling for individual info boxes */
-  .info-box {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for individual info boxes */
+.info-box {
     padding: 20px;
-  }
-  
-  /* Ensure container takes up full width of the screen */
-  .container {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure container takes up full width of the screen */
+.container {
     max-width: 100%;
-  }
-  
-  /* Media queries for responsive design */
-  @media (min-width: 600px) {
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Media queries for responsive design */
+@media (min-width: 600px) {
     .header {
-      flex-direction: row;
-      justify-content: space-between;
-      text-align: left;
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
     }
-  
+
     .header-title {
-      margin: 0;
+        margin: 0;
     }
-  
+
     .signout-button {
-      width: auto;
-      margin-top: 0;
+        width: auto;
+        margin-top: 0;
     }
-  }
-  
+
+    .info-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 599px) {
+    .metrics-container {
+        grid-template-columns: 1fr;
+    }
+
+    .info-container {
+        grid-template-columns: 1fr;
+    }
+
+    .signout-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
