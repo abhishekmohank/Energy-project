@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Grid, Paper, Typography, Box, Button } from '@mui/material';
+import CustomWhatsAppIcon from './CustomWhatsAppIcon'; // Import the custom WhatsApp icon
 import './Dashboard.css'; // Import the CSS file for styling
 
 const Dashboard = () => {
@@ -43,17 +44,16 @@ const Dashboard = () => {
         // Make an API request to get the dashboard data
         const response = await axios.get('http://localhost:5000/api/dashboard');
         // Update the state with the fetched data 
-
         setDashboardData(response.data);
-        setLoading(false);// Set loading to false once data is fetched
+        setLoading(false); // Set loading to false once data is fetched
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        setLoading(false);// Set loading to false in case of error
+        setLoading(false); // Set loading to false in case of error
       }
     };
 
     fetchData();
-  }, []);// Empty dependency array ensures this effect runs only once when the component mounts
+  }, []); // Empty dependency array ensures this effect runs only once when the component mounts
 
   // Show loading spinner while data is being fetched
   if (loading) {
@@ -127,6 +127,16 @@ const Dashboard = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* WhatsApp Chat Icon */}
+      <a
+        href="https://wa.me/1234567890" // Replace with the actual WhatsApp number
+        className="whatsapp-float"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <CustomWhatsAppIcon fontSize="large" style={{ color: 'white' }} />
+      </a>
     </Container>
   );
 };

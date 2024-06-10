@@ -2,101 +2,95 @@
 
 /* Basic styling for the header */
 .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: red;
-    padding: 10px;
-    color: white;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: red;
+  padding: 10px;
+  color: white;
+  text-align: center;
 }
 
 .header-title {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .logo {
-    height: 50px;
+  height: 50px;
 }
 
 .signout-button {
-    background-color: white;
-    color: red;
-    margin-top: 10px;
+  background-color: white;
+  color: red;
 }
 
 /* Styling for the containers holding metrics and information */
 .metrics-container, .info-container {
-    margin-top: 20px;
-    display: grid;
-    grid-gap: 20px;
-}
-
-.metrics-container {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
-
-.info-container {
-    grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
 }
 
 /* Styling for individual metric boxes */
 .metric-box {
-    text-align: center;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling for individual info boxes */
 .info-box {
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Ensure container takes up full width of the screen */
 .container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 /* Media queries for responsive design */
 @media (min-width: 600px) {
-    .header {
-        flex-direction: row;
-        justify-content: space-between;
-        text-align: left;
-    }
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
 
-    .header-title {
-        margin: 0;
-    }
+  .header-title {
+    margin: 0;
+  }
 
-    .signout-button {
-        width: auto;
-        margin-top: 0;
-    }
-
-    .info-container {
-        grid-template-columns: 1fr 1fr;
-    }
+  .signout-button {
+    width: auto;
+    margin-top: 0;
+  }
 }
 
-@media (max-width: 599px) {
-    .metrics-container {
-        grid-template-columns: 1fr;
-    }
+/* Styles for the floating WhatsApp icon */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #fff;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 2px 2px 3px #999;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .info-container {
-        grid-template-columns: 1fr;
-    }
-
-    .signout-button {
-        width: 100%;
-        margin-top: 10px;
-    }
+.whatsapp-float:hover {
+  background-color: #22bb58;
+  color: white;
 }
