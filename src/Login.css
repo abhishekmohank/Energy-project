@@ -50,7 +50,6 @@
 }
 
 .login-step p { /* Enter phone number to send the OTP */
-  margin-bottom: 15px;
   margin-top: 60px; /* Reduce margin from the top */
   margin-bottom: 0px;
   font-size: 16px; /* Increase the font size */
@@ -90,7 +89,6 @@
   color: #007bff;
   cursor: pointer;
   text-decoration: underline;
-  margin-top: 15px; /* Reduce margin from the top */
   margin-bottom: 50px;
 }
 
@@ -156,8 +154,23 @@
 }
 
 .logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
   width: 150px;
-  margin-bottom: 20px;
+  height: auto; /* Maintain aspect ratio */
+  padding: 10px; /* Add padding if needed */
+  background: rgba(255, 255, 255, 0); /* Optional: Add background color with transparency */
+  border-radius: 5px; /* Optional: Add border radius */
+}
+
+footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 12px;
 }
 
 /* Additional styling for "Resend in" text */

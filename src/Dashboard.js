@@ -64,7 +64,7 @@ const Dashboard = () => {
     <Container className="container">
       {/* Header section containing logo, title, and sign-out button */}
       <Box className="header">
-        <img src="logo.png" alt="Atria Power" className="logo" />
+        <img src="atria-logo.png" alt="Atria Power" className="logo" />
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>

@@ -69,6 +69,7 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      <img src="atria-logo.png" alt="Atria Power Logo" className="logo" />
       <video autoPlay muted loop id="bg-video">
         <source src="wind_turbine_on_a_field_at_sunrise-720p.mp4" type="video/mp4" />
       </video>
@@ -116,6 +117,9 @@ const Login = () => {
           </div>
         </div>
       )}
+      <footer>
+        <p>&copy; 2024 Atria Power Corporation. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
