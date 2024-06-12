@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Box, Button } from '@mui/material';
+import { Container, Grid, Paper, Typography, Box } from '@mui/material';
 import CustomWhatsAppIcon from './CustomWhatsAppIcon'; // Import the custom WhatsApp icon
 import './Dashboard.css'; // Import the CSS file for styling
 
@@ -68,9 +68,9 @@ const Dashboard = () => {
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
-        <Button variant="contained" className="signout-button">
+        {/* <Button variant="contained" className="signout-button">
           Sign Out
-        </Button>
+        </Button> */}
       </Box>
 
       {/* Grid container for displaying the metrics */}
@@ -83,7 +83,7 @@ const Dashboard = () => {
           { label: "Production Today", value: dashboardData.productionToday + " kWh" },
           { label: "Production - This Month", value: dashboardData.productionThisMonth + " kWh" },
           { label: "Production - This Year", value: dashboardData.productionThisYear + " kWh" },
-          { label: "Lifetime Production", value: dashboardData.lifetimeProduction + " kWh" },
+          { label: "Lifetime Production", value: dashboardData.lifetimeProduction + " kWh" }, 
         ].map((metric, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Paper className="metric-box">
@@ -142,3 +142,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+ 

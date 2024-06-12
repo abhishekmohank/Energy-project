@@ -22,11 +22,11 @@
 .login-form {
   position: relative;
   width: 300px; /* Adjust width as needed */
-  height: 400px; /* Adjust height as needed */
+  height: auto; /* Adjust height as needed */
   background: rgba(255, 255, 255, 0.9); /* Adjust transparency */
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust shadow */
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -42,21 +42,21 @@
   justify-content: flex-start; /* Align contents to the top */
 }
 
-.login-step h2 { /* Sign in Heading */
+.login-step h2 {
   margin-top: 20px; /* Reduce margin from the top */
   margin-bottom: 20px;
   font-size: 27px; /* Increase the font size */
   font-weight: bold; /* Make the text bold */
 }
 
-.login-step p { /* Enter phone number to send the OTP */
+.login-step p {
   margin-top: 60px; /* Reduce margin from the top */
   margin-bottom: 0px;
   font-size: 16px; /* Increase the font size */
   font-weight: normal; /* Remove bold text */
 }
 
-.login-step input { /* Phone Number Input and OTP Input */
+.login-step input {
   width: 95%;
   padding: 10px;
   margin-bottom: 15px;
@@ -66,7 +66,7 @@
   margin-bottom: 0px;
 }
 
-.login-step button.confirm-button, .login-step button { /* Confirm Button and Generate OTP */
+.login-step button.confirm-button, .login-step button {
   width: 90%;
   padding: 10px;
   background: #007bff;
@@ -161,7 +161,7 @@
   height: auto; /* Maintain aspect ratio */
   padding: 10px; /* Add padding if needed */
   background: rgba(255, 255, 255, 0); /* Optional: Add background color with transparency */
-  border-radius: 5px; /* Optional: Add border radius */
+  border-radius: 0px; /* Optional: Add border radius */
 }
 
 footer {
