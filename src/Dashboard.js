@@ -3,6 +3,10 @@ import axios from 'axios';
 import { Container, Grid, Paper, Typography, Box } from '@mui/material';
 import CustomWhatsAppIcon from './CustomWhatsAppIcon'; // Import the custom WhatsApp icon
 import './Dashboard.css'; // Import the CSS file for styling
+import PowerIcon from '@mui/icons-material/Power';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ThermostatIcon from '@mui/icons-material/Thermostat';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
 
 const Dashboard = () => {
   // State to store dashboard data
@@ -64,29 +68,28 @@ const Dashboard = () => {
     <Container className="container">
       {/* Header section containing logo, title, and sign-out button */}
       <Box className="header">
-        <img src="atria-logo.png" alt="Atria Power" className="logo" />
+        {/* <img src="atria-logo.png" alt="Atria Power" className="logo" /> */} {/*Logo on top left corner */}
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
-        {/* <Button variant="contained" className="signout-button">
-          Sign Out
-        </Button> */}
+        <button className="signout-button">Sign Out</button>
       </Box>
 
       {/* Grid container for displaying the metrics */}
       <Grid container spacing={3} className="metrics-container">
         {[
-          { label: "Current PV Power", value: dashboardData.currentPvPower + " kW" },
-          { label: "Current AC Output", value: dashboardData.currentAcOutput + " kW" },
-          { label: "Total Operation Time", value: dashboardData.totalOperationTime + " hrs" },
-          { label: "Inverter Temperature", value: dashboardData.inverterTemperature + " °C" },
-          { label: "Production Today", value: dashboardData.productionToday + " kWh" },
-          { label: "Production - This Month", value: dashboardData.productionThisMonth + " kWh" },
-          { label: "Production - This Year", value: dashboardData.productionThisYear + " kWh" },
-          { label: "Lifetime Production", value: dashboardData.lifetimeProduction + " kWh" }, 
+          { label: "Current PV Power", value: dashboardData.currentPvPower + " kW", icon: <PowerIcon className="metric-icon" /> },
+          { label: "Current AC Output", value: dashboardData.currentAcOutput + " kW", icon: <PowerIcon className="metric-icon" /> },
+          { label: "Total Operation Time", value: dashboardData.totalOperationTime + " hrs", icon: <AccessTimeIcon className="metric-icon" /> },
+          { label: "Inverter Temperature", value: dashboardData.inverterTemperature + " °C", icon: <ThermostatIcon className="metric-icon" /> },
+          { label: "Production Today", value: dashboardData.productionToday + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
+          { label: "Production - This Month", value: dashboardData.productionThisMonth + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
+          { label: "Production - This Year", value: dashboardData.productionThisYear + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
+          { label: "Lifetime Production", value: dashboardData.lifetimeProduction + " kWh", icon: <WbSunnyIcon className="metric-icon" /> }, 
         ].map((metric, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Paper className="metric-box">
+              {metric.icon}
               <Typography variant="h6">{metric.value}</Typography>
               <Typography variant="body1">{metric.label}</Typography>
             </Paper>
@@ -94,39 +97,35 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      {/* Grid container for displaying performance and general information */}
-      <Grid container spacing={3} className="info-container">
-        <Grid item xs={12} sm={6}>
-          <Paper className="info-box">
-            <Typography variant="h6">Performance Metrics</Typography>
-            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
-            <Typography variant="body1">PV Voltage(V): {dashboardData.pvVoltage}</Typography>
-            <Typography variant="body1">PV Current(A): {dashboardData.pvCurrent}</Typography>
-            <Typography variant="body1">PV Power(kW): {dashboardData.pvPower}</Typography>
-            <Typography variant="body1">AC Voltage(V): {dashboardData.acVoltage}</Typography>
-            <Typography variant="body1">AC Current(A): {dashboardData.acCurrent}</Typography>
-            <Typography variant="body1">AC Power(kW): {dashboardData.acPower}</Typography>
-          </Paper>
-        </Grid>
+      {/* Flex container for displaying performance and general information */}
+      <Box className="info-section">
+        <Paper className="info-box">
+          <Typography variant="h6">Performance Metrics</Typography>
+          <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+          <Typography variant="body1" className="info-label">PV Voltage(V): {dashboardData.pvVoltage}</Typography>
+          <Typography variant="body1" className="info-label">PV Current(A): {dashboardData.pvCurrent}</Typography>
+          <Typography variant="body1" className="info-label">PV Power(kW): {dashboardData.pvPower}</Typography>
+          <Typography variant="body1" className="info-label">AC Voltage(V): {dashboardData.acVoltage}</Typography>
+          <Typography variant="body1" className="info-label">AC Current(A): {dashboardData.acCurrent}</Typography>
+          <Typography variant="body1" className="info-label">AC Power(kW): {dashboardData.acPower}</Typography>
+        </Paper>
 
         {/* General Information */}
-        <Grid item xs={12} sm={6}>
-          <Paper className="info-box">
-            <Typography variant="h6">General Information</Typography>
-            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
-            <Typography variant="body1">Plant type: {dashboardData.plantType}</Typography>
-            <Typography variant="body1">On-Grid Date: {dashboardData.onGridDate}</Typography>
-            <Typography variant="body1">Total Installed Capacity: {dashboardData.totalInstalledCapacity}</Typography>
-            <Typography variant="body1">Address: {dashboardData.address}</Typography>
-            <Typography variant="body1">Device Status: {dashboardData.deviceStatus}</Typography>
-            <Typography variant="body1">Device Name: {dashboardData.deviceName}</Typography>
-            <Typography variant="body1">Serial Number: {dashboardData.serialNumber}</Typography>
-            <Typography variant="body1">Device Type: {dashboardData.deviceType}</Typography>
-            <Typography variant="body1">Rated Power: {dashboardData.ratedPower}</Typography>
-            <Typography variant="body1">Communication Mode: {dashboardData.communicationMode}</Typography>
-          </Paper>
-        </Grid>
-      </Grid>
+        <Paper className="info-box">
+          <Typography variant="h6">General Information</Typography>
+          <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+          <Typography variant="body1" className="info-label">Plant type: {dashboardData.plantType}</Typography>
+          <Typography variant="body1" className="info-label">On-Grid Date: {dashboardData.onGridDate}</Typography>
+          <Typography variant="body1" className="info-label">Total Installed Capacity: {dashboardData.totalInstalledCapacity}</Typography>
+          <Typography variant="body1" className="info-label">Address: {dashboardData.address}</Typography>
+          <Typography variant="body1" className="info-label">Device Status: {dashboardData.deviceStatus}</Typography>
+          <Typography variant="body1" className="info-label">Device Name: {dashboardData.deviceName}</Typography>
+          <Typography variant="body1" className="info-label">Serial Number: {dashboardData.serialNumber}</Typography>
+          <Typography variant="body1" className="info-label">Device Type: {dashboardData.deviceType}</Typography>
+          <Typography variant="body1" className="info-label">Rated Power: {dashboardData.ratedPower}</Typography>
+          <Typography variant="body1" className="info-label">Communication Mode: {dashboardData.communicationMode}</Typography>
+        </Paper>
+      </Box>
 
       {/* WhatsApp Chat Icon */}
       <a
@@ -142,4 +141,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
- 
