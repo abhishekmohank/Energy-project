@@ -48,7 +48,7 @@ const Login = () => {
   const handleGenerateOtp = async () => {
     if (phoneNumber.length === 10) {
       try {
-        const response = await axios.post('http://localhost:5001/api/send-otp', {
+        const response = await axios.post('/api/send-otp', {
           phoneNumber: `${countryCode}${phoneNumber}`
         });
         if (response.data.status === 'pending') {
@@ -69,7 +69,7 @@ const Login = () => {
   const handleConfirmOtp = async () => {
     if (otp.length === 6) {
       try {
-        const response = await axios.post('http://localhost:5001/api/verify-otp', {
+        const response = await axios.post('/api/verify-otp', {
           phoneNumber: `${countryCode}${phoneNumber}`,
           otp
         });
