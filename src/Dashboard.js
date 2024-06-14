@@ -4,6 +4,16 @@ import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } fro
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'; // Corrected import statement
 import './Dashboard.css'; // Import the CSS file for styling
 
+const getApiBaseUrl = () => {
+  if (window.location.hostname === 'localhost') {
+    return 'http://localhost:5001';
+  } else {
+    return window.location.origin;
+  }
+};
+
+const apiBaseUrl = getApiBaseUrl();
+
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
     pvVoltage: '',
@@ -42,7 +52,7 @@ const Dashboard = () => {
   const fetchData = useCallback(async () => {
     try {
       const sessionToken = localStorage.getItem('session_token');
-      const response = await axios.get('http://localhost:5001/api/dashboard', {
+      const response = await axios.get(`${apiBaseUrl}/api/dashboard`, {
         headers: {
           'Authorization': sessionToken
         }
