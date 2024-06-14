@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Box, Button } from '@mui/material';
+import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'; // Corrected import statement
 import './Dashboard.css'; // Import the CSS file for styling
 
 const Dashboard = () => {
-  // State to store dashboard data
   const [dashboardData, setDashboardData] = useState({
     pvVoltage: '',
     pvCurrent: '',
@@ -31,20 +31,30 @@ const Dashboard = () => {
     ratedPower: '',
     communicationMode: '',
     lastUpdated: '',
+    pvGeneration: '',
+    selfConsumption: '',
+    selfConsumptionRatio: '',
   });
 
-  // State to handle loading state
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Fetch data from backend
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      
-      const response = await axios.get('http://localhost:5001/api/dashboard');
-      
+      const sessionToken = localStorage.getItem('session_token');
+      const response = await axios.get('http://localhost:5001/api/dashboard', {
+        headers: {
+          'Authorization': sessionToken
+        }
+      });
       const data = response.data;
 
-      // Map API response to state
+      if (response.status === 401) {
+        setError(data.error);
+        setLoading(false);
+        return;
+      }
+
       setDashboardData({
         pvVoltage: data.Vpv1,
         pvCurrent: data.Ipv1,
@@ -57,7 +67,7 @@ const Dashboard = () => {
         totalOperationTime: data.TimeTotal,
         inverterTemperature: data.Temperature1,
         productionToday: data.Eday,
-        productionThisMonth: 'N/A',  
+        productionThisMonth: data.productionThisMonth, // Updated field
         productionThisYear: 'N/A', 
         lifetimeProduction: data.Etotal,
         plantType: data.ModelType,
@@ -71,30 +81,63 @@ const Dashboard = () => {
         ratedPower: 'N/A', 
         communicationMode: 'N/A', 
         lastUpdated: data.CreationDate,
+        pvGeneration: data.pvGeneration,
+        selfConsumption: data.selfConsumption,
+        selfConsumptionRatio: data.selfConsumptionRatio,
       });
 
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      if (error.response && error.response.status === 401) {
+        setError(error.response.data.error);
+      } else {
+        console.error('Error fetching dashboard data:', error.message);
+        setError('Error fetching dashboard data');
+      }
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000);
-
+    const interval = setInterval(fetchData, 15000); // Reduced frequency
     return () => clearInterval(interval); 
-  }, []);
+  }, [fetchData]);
 
-  // Show loading spinner while data is being fetched
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="error-container">
+        <Paper className="error-message" elevation={3}>
+          <ErrorOutlineIcon color="error" style={{ fontSize: 60 }} />
+          <Typography variant="h5" color="error" gutterBottom>
+            {error}
+          </Typography>
+          <Typography variant="body1">
+            {error === 'Your session has timed out. Please log in again.' ? 'Your session has expired. Please log in again to continue.' : 'Please verify your phone number before accessing the dashboard.'}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.location.href = 'http://localhost:3000'}
+            style={{ marginTop: '20px' }}
+          >
+            Go to Login
+          </Button>
+        </Paper>
+      </Container>
+    );
   }
 
   return (
     <Container className="container">
-      {/* Header section */}
       <Box className="header">
         <img src="logo.png" alt="Atria Power" className="logo" />
         <Typography variant="h4" component="h1" className="header-title">
@@ -105,7 +148,6 @@ const Dashboard = () => {
         </Button>
       </Box>
 
-      {/* Metrics section */}
       <Grid container spacing={3} className="metrics-container">
         {[
           { label: "Current PV Power", value: dashboardData.currentPvPower + " kW" },
@@ -126,7 +168,6 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      {/* Information section */}
       <Grid container spacing={3} className="info-container">
         <Grid item xs={12} sm={6}>
           <Paper className="info-box">
@@ -155,6 +196,16 @@ const Dashboard = () => {
             <Typography variant="body1">Device Type: {dashboardData.deviceType}</Typography>
             <Typography variant="body1">Rated Power: {dashboardData.ratedPower}</Typography>
             <Typography variant="body1">Communication Mode: {dashboardData.communicationMode}</Typography>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Paper className="info-box">
+            <Typography variant="h6">Electricity Statistics Data</Typography>
+            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+            <Typography variant="body1">PV Generation: {dashboardData.pvGeneration} kWh</Typography>
+            <Typography variant="body1">Self Consumption: {dashboardData.selfConsumption} kWh</Typography>
+            <Typography variant="body1">Self Consumption Ratio: {dashboardData.selfConsumptionRatio} %</Typography>
           </Paper>
         </Grid>
       </Grid>
