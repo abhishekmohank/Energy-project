@@ -3,16 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-const getApiBaseUrl = () => {
-  if (window.location.hostname === 'localhost') {
-    return 'http://localhost:5001';
-  } else {
-    return window.location.origin;
-  }
-};
-
-const apiBaseUrl = getApiBaseUrl();
-
 const countryCodes = [
   { code: '+1', name: 'USA' },
   { code: '+91', name: 'India' },
@@ -58,7 +48,7 @@ const Login = () => {
   const handleGenerateOtp = async () => {
     if (phoneNumber.length === 10) {
       try {
-        const response = await axios.post(`${apiBaseUrl}/api/send-otp`, {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/send-otp`, {
           phoneNumber: `${countryCode}${phoneNumber}`
         });
         if (response.data.status === 'pending') {
@@ -66,21 +56,20 @@ const Login = () => {
           setTimer(180);
           setError('');
         } else {
-          setError('Failed to send OTP');
+          alert('Failed to send OTP');
         }
       } catch (error) {
         console.error('Error sending OTP:', error);
-        setError('Error sending OTP. Please try again.');
       }
     } else {
-      setError("Phone number must be exactly 10 digits");
+      alert("Phone number must be exactly 10 digits");
     }
   };
 
   const handleConfirmOtp = async () => {
     if (otp.length === 6) {
       try {
-        const response = await axios.post(`${apiBaseUrl}/api/verify-otp`, {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/verify-otp`, {
           phoneNumber: `${countryCode}${phoneNumber}`,
           otp
         });
@@ -135,7 +124,6 @@ const Login = () => {
               maxLength="10"
             />
             <button onClick={handleGenerateOtp}>Generate OTP</button>
-            {error && <p className="error-message">{error}</p>}
           </div>
         ) : (
           <div className="login-step">
