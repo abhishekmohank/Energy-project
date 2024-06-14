@@ -51,10 +51,18 @@
 
 .login-step p { /* Enter phone number to send the OTP */
   margin-bottom: 15px;
-  margin-top: 60px; /* Reduce margin from the top */
-  margin-bottom: 0px;
+  margin-top: 20px; /* Reduce margin from the top */
   font-size: 16px; /* Increase the font size */
   font-weight: normal; /* Remove bold text */
+}
+
+.login-step select { /* Country Code Dropdown */
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 20px; /* Reduce margin from the top */
 }
 
 .login-step input { /* Phone Number Input and OTP Input */
@@ -63,8 +71,7 @@
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-top: 40px; /* Reduce margin from the top */
-  margin-bottom: 0px;
+  margin-top: 10px; /* Adjust margin from the top */
 }
 
 .login-step button.confirm-button, .login-step button { /* Confirm Button and Generate OTP */
@@ -75,8 +82,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 50px; /* Adjust margin from the top */
-  margin-bottom: 0px;
+  margin-top: 20px; /* Adjust margin from the top */
 }
 
 .login-step button:hover {
@@ -90,8 +96,6 @@
   color: #007bff;
   cursor: pointer;
   text-decoration: underline;
-  margin-top: 15px; /* Reduce margin from the top */
-  margin-bottom: 50px;
 }
 
 .privacy-policy-button:hover {
@@ -147,8 +151,6 @@
   color: #007bff;
   cursor: pointer;
   text-decoration: underline;
-  margin-top: 15px; /* Adjust margin from the top */
-  margin-bottom: 15px; /* Adjust margin from the bottom */
 }
 
 .resend-button:hover {
@@ -172,4 +174,10 @@
   color: #ff0505;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* Styling for error message */
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
