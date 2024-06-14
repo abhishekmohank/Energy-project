@@ -6,11 +6,13 @@ import asyncio
 import secrets
 import logging
 from datetime import datetime, timedelta
+import os
 
 app = Quart(__name__)
-app = cors(app, allow_origin="http://localhost:3000")
+app = cors(app, allow_origin="*")
 app.secret_key = secrets.token_hex(16)
 
+# Load environment variables
 TWILIO_ACCOUNT_SID = "AC42ed38b869ba2e9bdd38a80a5909d282"
 TWILIO_AUTH_TOKEN = "1f171d4933f3fd52612b2042686999ff"
 TWILIO_SERVICE_SID = "VA71ab60a3c265411d5ab49db335d657f1"
@@ -19,19 +21,20 @@ client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 logging.basicConfig(level=logging.INFO)
 
+# Use a dictionary to store valid session tokens with their expiration times
 valid_tokens = {}
 
-TOKEN_EXPIRATION_MINUTES = 1
+# Token expiration duration (e.g., 30 minutes)
+TOKEN_EXPIRATION_MINUTES = 30
 
-def check_token(token):
-    """Check if the token is valid and not expired, and return appropriate message."""
+def is_token_valid(token):
+    """Check if the token is valid and not expired."""
     if token in valid_tokens:
         if valid_tokens[token] > datetime.utcnow():
-            return "valid"
+            return True
         else:
             del valid_tokens[token]  # Remove expired token
-            return "expired"
-    return "invalid"
+    return False
 
 @app.route('/api/send-otp', methods=['POST'])
 async def send_otp():
@@ -68,15 +71,11 @@ async def dashboard_data():
     session_token = request.headers.get('Authorization')
     logging.info(f"Received session token: {session_token}")
     logging.info(f"Valid tokens: {valid_tokens}")
-    token_status = check_token(session_token)
-    if token_status == "valid":
+    if is_token_valid(session_token):
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(None, main)
         return jsonify(result)
-    elif token_status == "expired":
-        return jsonify({'error': 'Your session has timed out. Please log in again.'}), 401
-    else:
-        return jsonify({'error': 'You are not authorized'}), 401
+    return jsonify({'error': 'You are not authorized'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
