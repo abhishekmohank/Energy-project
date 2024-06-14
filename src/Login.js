@@ -3,6 +3,16 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
+const getApiBaseUrl = () => {
+  if (window.location.hostname === 'localhost') {
+    return 'http://localhost:5001';
+  } else {
+    return window.location.origin;
+  }
+};
+
+const apiBaseUrl = getApiBaseUrl();
+
 const countryCodes = [
   { code: '+1', name: 'USA' },
   { code: '+91', name: 'India' },
@@ -48,7 +58,7 @@ const Login = () => {
   const handleGenerateOtp = async () => {
     if (phoneNumber.length === 10) {
       try {
-        const response = await axios.post('/api/send-otp', {
+        const response = await axios.post(`${apiBaseUrl}/api/send-otp`, {
           phoneNumber: `${countryCode}${phoneNumber}`
         });
         if (response.data.status === 'pending') {
@@ -69,7 +79,7 @@ const Login = () => {
   const handleConfirmOtp = async () => {
     if (otp.length === 6) {
       try {
-        const response = await axios.post('/api/verify-otp', {
+        const response = await axios.post(`${apiBaseUrl}/api/verify-otp`, {
           phoneNumber: `${countryCode}${phoneNumber}`,
           otp
         });
