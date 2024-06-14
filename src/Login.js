@@ -66,13 +66,14 @@ const Login = () => {
           setTimer(180);
           setError('');
         } else {
-          alert('Failed to send OTP');
+          setError('Failed to send OTP');
         }
       } catch (error) {
         console.error('Error sending OTP:', error);
+        setError('Error sending OTP. Please try again.');
       }
     } else {
-      alert("Phone number must be exactly 10 digits");
+      setError("Phone number must be exactly 10 digits");
     }
   };
 
@@ -134,6 +135,7 @@ const Login = () => {
               maxLength="10"
             />
             <button onClick={handleGenerateOtp}>Generate OTP</button>
+            {error && <p className="error-message">{error}</p>}
           </div>
         ) : (
           <div className="login-step">
