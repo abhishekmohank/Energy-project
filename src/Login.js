@@ -1,14 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
+const countryCodes = [
+  { code: '+1', name: 'USA' },
+  { code: '+91', name: 'India' },
+  // Add more country codes as needed
+];
+
 const Login = () => {
   const [step, setStep] = useState(1);
+  const [countryCode, setCountryCode] = useState('+1');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [timer, setTimer] = useState(180); // 3 minutes
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const navigate = useNavigate(); // Use useNavigate hook
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     let interval;
@@ -22,44 +31,67 @@ const Login = () => {
     return () => clearInterval(interval);
   }, [step, timer]);
 
-  const handlePhoneChange = (e) => {
+  const handlePhoneChange = useCallback((e) => {
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value)) {
       setPhoneNumber(value);
     }
-  };
+  }, []);
 
-  const handleOtpChange = (e) => {
+  const handleOtpChange = useCallback((e) => {
     const value = e.target.value;
-    if (/^\d{0,4}$/.test(value)) {
+    if (/^\d{0,6}$/.test(value)) {
       setOtp(value);
     }
-  };
+  }, []);
 
-  const handleGenerateOtp = () => {
+  const handleGenerateOtp = async () => {
     if (phoneNumber.length === 10) {
-      // Handle OTP generation logic here
-      setStep(2);
-      setTimer(180); // reset timer to 3 minutes
+      try {
+        const response = await axios.post('http://localhost:5001/api/send-otp', {
+          phoneNumber: `${countryCode}${phoneNumber}`
+        });
+        if (response.data.status === 'pending') {
+          setStep(2);
+          setTimer(180);
+          setError('');
+        } else {
+          alert('Failed to send OTP');
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+      }
     } else {
       alert("Phone number must be exactly 10 digits");
     }
   };
 
-  const handleConfirmOtp = () => {
-    if (otp.length === 4) {
-      // Handle OTP confirmation logic here
-      // Assuming OTP is correct
-      navigate('/dashboard'); // Redirect to dashboard
+  const handleConfirmOtp = async () => {
+    if (otp.length === 6) {
+      try {
+        const response = await axios.post('http://localhost:5001/api/verify-otp', {
+          phoneNumber: `${countryCode}${phoneNumber}`,
+          otp
+        });
+        if (response.data.status === 'approved') {
+          const { session_token } = response.data;
+          localStorage.setItem('session_token', session_token);
+          navigate('/dashboard');
+        } else {
+          setError('Invalid OTP. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error verifying OTP:', error);
+        setError('An error occurred while verifying OTP. Please try again.');
+      }
     } else {
-      alert("OTP must be exactly 4 digits");
+      setError("OTP must be exactly 6 digits");
     }
   };
 
   const handleResendOtp = () => {
     if (timer === 0) {
-      // Handle OTP resend logic here
-      setTimer(180); // reset timer to 3 minutes
+      handleGenerateOtp();
     }
   };
 
@@ -77,6 +109,13 @@ const Login = () => {
           <div className="login-step">
             <h2>Sign in</h2>
             <p>Enter phone number to send one time Password</p>
+            <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
+              {countryCodes.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.name} ({country.code})
+                </option>
+              ))}
+            </select>
             <input
               type="text"
               placeholder="Phone Number"
@@ -95,9 +134,10 @@ const Login = () => {
               placeholder="OTP"
               value={otp}
               onChange={handleOtpChange}
-              maxLength="4"
+              maxLength="6"
             />
             <button onClick={handleConfirmOtp}>Confirm</button>
+            {error && <p className="error-message">{error}</p>}
             <p className={`resend-text ${timer === 0 ? 'active' : ''}`} onClick={handleResendOtp}>
               {timer > 0 ? `Resend in ${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}` : 'Resend OTP'}
             </p>
