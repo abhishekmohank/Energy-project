@@ -12,7 +12,7 @@ app = cors(app, allow_origin="http://localhost:3000")
 app.secret_key = secrets.token_hex(16)
 
 TWILIO_ACCOUNT_SID = "AC42ed38b869ba2e9bdd38a80a5909d282"
-TWILIO_AUTH_TOKEN = "a35f6d40ad1b4114089bd03c5df2cee8"
+TWILIO_AUTH_TOKEN = "1f171d4933f3fd52612b2042686999ff"
 TWILIO_SERVICE_SID = "VA71ab60a3c265411d5ab49db335d657f1"
 
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
