@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Box } from '@mui/material';
-import CustomWhatsAppIcon from './CustomWhatsAppIcon'; // Import the custom WhatsApp icon
+import { Container, Grid, Paper, Typography, Box, Button } from '@mui/material';
 import './Dashboard.css'; // Import the CSS file for styling
 import PowerIcon from '@mui/icons-material/Power';
 // import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -73,6 +72,13 @@ const Dashboard = () => {
     return <div>Loading...</div>;
   }
 
+  // Function to share referral message on WhatsApp
+  const shareReferral = () => {
+    const message = encodeURIComponent('Check out this amazing dashboard at ATRIA UNIVERSITY-ARPL-2024-24-ABP-01!');
+    const whatsappUrl = `https://wa.me/?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <Container className="container">
       {/* Header section containing logo, title, and sign-out button */}
@@ -81,6 +87,9 @@ const Dashboard = () => {
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
+        <Button variant="contained" color="primary" onClick={shareReferral} className="referral-button">
+          Share with a Friend
+        </Button>
        {/*} <button className="signout-button">Sign Out</button> */}
       </Box>
 
@@ -147,13 +156,15 @@ const Dashboard = () => {
 
       {/* WhatsApp Chat Icon */}
       <a
-        href="https://wa.me/1234567890" // Replace with the actual WhatsApp number
+        href="https://wa.me/+918904967001" // Replace with the actual WhatsApp number
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <CustomWhatsAppIcon fontSize="large" style={{ color: 'white' }} />
+        <img public="flat-whatsapp-icon.png" alt="WhatsApp" className="whatsapp-icon" />
       </a>
+
+       
     </Container>
   );
 };

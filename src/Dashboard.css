@@ -173,3 +173,9 @@ body {
 .whatsapp-float:hover {
   background-color: #128c7e;
 }
+
+.whatsapp-float img.whatsapp-icon {
+  width: 60%;
+  height: 60%;
+  object-fit: contain; /* Ensure the image fits within the container */
+}
