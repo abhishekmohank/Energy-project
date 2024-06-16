@@ -4,8 +4,8 @@ import { Container, Grid, Paper, Typography, Box } from '@mui/material';
 import CustomWhatsAppIcon from './CustomWhatsAppIcon'; // Import the custom WhatsApp icon
 import './Dashboard.css'; // Import the CSS file for styling
 import PowerIcon from '@mui/icons-material/Power';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ThermostatIcon from '@mui/icons-material/Thermostat';
+// import AccessTimeIcon from '@mui/icons-material/AccessTime';
+// import ThermostatIcon from '@mui/icons-material/Thermostat';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 
 const Dashboard = () => {
@@ -18,12 +18,12 @@ const Dashboard = () => {
     acCurrent: '',
     acPower: '',
     currentPvPower: '',
-    currentAcOutput: '',
-    totalOperationTime: '',
-    inverterTemperature: '',
+    // currentAcOutput: '',
+    // totalOperationTime: '',
+    // inverterTemperature: '',
     productionToday: '',
     productionThisMonth: '',
-    productionThisYear: '',
+    // productionThisYear: '',
     lifetimeProduction: '',
     plantType: '',
     onGridDate: '',
@@ -36,6 +36,10 @@ const Dashboard = () => {
     ratedPower: '',
     communicationMode: '',
     lastUpdated: '',
+    // New properties for electricity statistics data
+    pvGeneration: '',
+    selfConsumption: '',
+    selfConsumptionRatio: '',
   });
 
   // State to handle loading state
@@ -77,19 +81,19 @@ const Dashboard = () => {
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
-        <button className="signout-button">Sign Out</button>
+       {/*} <button className="signout-button">Sign Out</button> */}
       </Box>
 
       {/* Grid container for displaying the metrics */}
       <Grid container spacing={3} className="metrics-container">
         {[
           { label: "Current PV Power", value: handleMissingValue(dashboardData.currentPvPower) + " kW", icon: <PowerIcon className="metric-icon" /> },
-          { label: "Current AC Output", value: handleMissingValue(dashboardData.currentAcOutput) + " kW", icon: <PowerIcon className="metric-icon" /> },
-          { label: "Total Operation Time", value: handleMissingValue(dashboardData.totalOperationTime) + " hrs", icon: <AccessTimeIcon className="metric-icon" /> },
-          { label: "Inverter Temperature", value: handleMissingValue(dashboardData.inverterTemperature) + " °C", icon: <ThermostatIcon className="metric-icon" /> },
+          // { label: "Current AC Output", value: handleMissingValue(dashboardData.currentAcOutput) + " kW", icon: <PowerIcon className="metric-icon" /> },
+          // { label: "Total Operation Time", value: handleMissingValue(dashboardData.totalOperationTime) + " hrs", icon: <AccessTimeIcon className="metric-icon" /> },
+          // { label: "Inverter Temperature", value: handleMissingValue(dashboardData.inverterTemperature) + " °C", icon: <ThermostatIcon className="metric-icon" /> },
           { label: "Production Today", value: handleMissingValue(dashboardData.productionToday) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
           { label: "Production - This Month", value: handleMissingValue(dashboardData.productionThisMonth) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
-          { label: "Production - This Year", value: handleMissingValue(dashboardData.productionThisYear) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
+          // { label: "Production - This Year", value: handleMissingValue(dashboardData.productionThisYear) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
           { label: "Lifetime Production", value: handleMissingValue(dashboardData.lifetimeProduction) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> }, 
         ].map((metric, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
@@ -104,7 +108,7 @@ const Dashboard = () => {
 
       {/* Flex container for displaying performance and general information */}
       <Box className="info-section">
-        <Paper className="info-box">
+        {/* <Paper className="info-box">
           <Typography variant="h6">Performance Metrics</Typography>
           <Typography variant="body2">Last updated: {handleMissingValue(dashboardData.lastUpdated)}</Typography>
           <Typography variant="body1" className="info-label">PV Voltage(V): {handleMissingValue(dashboardData.pvVoltage)}</Typography>
@@ -113,7 +117,7 @@ const Dashboard = () => {
           <Typography variant="body1" className="info-label">AC Voltage(V): {handleMissingValue(dashboardData.acVoltage)}</Typography>
           <Typography variant="body1" className="info-label">AC Current(A): {handleMissingValue(dashboardData.acCurrent)}</Typography>
           <Typography variant="body1" className="info-label">AC Power(kW): {handleMissingValue(dashboardData.acPower)}</Typography>
-        </Paper>
+        </Paper> */}
 
         {/* General Information */}
         <Paper className="info-box">
@@ -129,6 +133,15 @@ const Dashboard = () => {
           <Typography variant="body1" className="info-label">Device Type: {handleMissingValue(dashboardData.deviceType)}</Typography>
           <Typography variant="body1" className="info-label">Rated Power: {handleMissingValue(dashboardData.ratedPower)}</Typography>
           <Typography variant="body1" className="info-label">Communication Mode: {handleMissingValue(dashboardData.communicationMode)}</Typography>
+        </Paper>
+
+        {/* Electricity Statistics Data */}
+        <Paper className="info-box">
+          <Typography variant="h6">Electricity Statistics Data</Typography>
+          <Typography variant="body2">Last updated: {handleMissingValue(dashboardData.lastUpdated)}</Typography>
+          <Typography variant="body1" className="info-label">PV Generation: {handleMissingValue(dashboardData.pvGeneration)} kWh</Typography>
+          <Typography variant="body1" className="info-label">Self Consumption: {handleMissingValue(dashboardData.selfConsumption)} kWh</Typography>
+          <Typography variant="body1" className="info-label">Self Consumption Ratio: {handleMissingValue(dashboardData.selfConsumptionRatio)} %</Typography>
         </Paper>
       </Box>
 
