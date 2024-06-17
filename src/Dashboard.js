@@ -4,6 +4,8 @@ import { Container, Grid, Paper, Typography, Box, Button, Dialog, DialogTitle, D
 import PowerIcon from '@mui/icons-material/Power';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import './Dashboard.css'; // Import the CSS file for styling
+import Logo from './logo.png'; // Import your logo
+import GiftIcon from './gift-icon.png'; // Import the gift icon
 
 const Dashboard = () => {
   // State to store dashboard data
@@ -106,13 +108,19 @@ const Dashboard = () => {
     <Container className="container">
       {/* Header section containing logo, title, and share button */}
       <Box className="header">
+        <div className="logo-container">
+          <img src={Logo} alt="Logo" className="logo" />
+          <Typography variant="h6" className="logo-name">Your Organization Name</Typography>
+        </div>
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
-        <Button variant="contained" color="primary" className="share-button" onClick={handleShareClick}>
-          Share
-        </Button>
-        <button className="signout-button">Sign Out</button>
+        <div className="header-buttons">
+          <Button variant="contained" color="primary" className="share-button" onClick={handleShareClick}>
+            Refer a Friend!
+          </Button>
+          <button className="signout-button">Sign Out</button>
+        </div>
       </Box>
 
       {/* Grid container for displaying the metrics */}
@@ -162,21 +170,32 @@ const Dashboard = () => {
 
       {/* Share Popup */}
       <Dialog open={sharePopupOpen} onClose={handleShareClose}>
-        <DialogTitle>Invite friends. Get free Plus.</DialogTitle>
-        <DialogContent>
+        <DialogTitle>
+          <div className="referral-dialog-title">
+            <img src={GiftIcon} alt="Gift" />
+            <span>Invite friends. Get free Plus.</span>
+          </div>
+        </DialogTitle>
+        <DialogContent className="referral-dialog-content">
           <Typography>Get one week of free Duolingo Plus for every friend who joins via your invite link.</Typography>
-          <Typography>Referral Link: {referralData.referralLink}</Typography>
-          <Typography>Referral Code: {referralData.referralCode}</Typography>
+          <div className="referral-link-container">
+            <input type="text" value={referralData.referralLink} readOnly />
+            <button className="copy-link-button" onClick={() => navigator.clipboard.writeText(referralData.referralLink)}>Copy Link</button>
+          </div>
+          <div className="social-buttons">
+            <Button variant="contained" color="primary" onClick={shareReferral}>
+              WhatsApp
+            </Button>
+          </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={shareReferral} color="primary">Share on WhatsApp</Button>
           <Button onClick={handleShareClose} color="secondary">Close</Button>
         </DialogActions>
       </Dialog>
 
       {/* WhatsApp Chat Icon */}
       <a
-        href="https://wa.me/+918904967001" // Replace with the actual WhatsApp number
+        href={`https://wa.me/+918904967001?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Replace with the actual WhatsApp number
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"

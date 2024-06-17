@@ -58,11 +58,19 @@ body {
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  margin-right: 10px; /* Add gap between share and sign out button */
 }
 
 .share-button:hover {
   background-color: #d32f2f;
   color: white;
+}
+
+/* Container for header buttons */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 /* Add margin to the referral icon */
@@ -205,6 +213,44 @@ body {
   object-fit: contain; /* Ensure the image fits within the container */
 }
 
-.referral-icon {
-  margin-left: 10px; /* Adjust this value as needed to move the icon to the right */
+/* Styles for the referral dialog */
+.referral-dialog-title {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
 }
+
+.referral-dialog-title img {
+  margin-right: 10px;
+}
+
+.referral-dialog-content {
+  text-align: center;
+}
+
+.referral-dialog-content .referral-link-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.referral-dialog-content .copy-link-button {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.referral-dialog-content .social-buttons {
+  margin-top: 20px;
+}
+
+.referral-dialog-content .social-buttons button {
+  margin: 0 10px;
+}
+
