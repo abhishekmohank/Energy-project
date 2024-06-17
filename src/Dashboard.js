@@ -99,7 +99,7 @@ const Dashboard = () => {
 
   // Function to share referral message on WhatsApp
   const shareReferral = () => {
-    const message = encodeURIComponent(`${referralData.referralLink}`);
+    const message = encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`);
     const whatsappUrl = `https://wa.me/?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -171,22 +171,24 @@ const Dashboard = () => {
       {/* Share Popup */}
       <Dialog open={sharePopupOpen} onClose={handleShareClose}>
         <DialogTitle>
-          <div className="referral-dialog-title">
-            <img src={GiftIcon} alt="Gift" />
-            <span>Invite friends. Get free Plus.</span>
+          <div className="referral-dialog-title" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={GiftIcon} alt="Gift" style={{ marginRight: '10px' }} />
+            <Typography variant="h6">Invite friends. Get free Plus.</Typography>
           </div>
         </DialogTitle>
         <DialogContent className="referral-dialog-content">
-          <Typography>Get one week of free Duolingo Plus for every friend who joins via your invite link.</Typography>
-          <div className="referral-link-container">
-            <input type="text" value={referralData.referralLink} readOnly />
-            <button className="copy-link-button" onClick={() => navigator.clipboard.writeText(referralData.referralLink)}>Copy Link</button>
-          </div>
-          <div className="social-buttons">
-            <Button variant="contained" color="primary" onClick={shareReferral}>
+          <Typography variant="body2">Get one week of free Duolingo Plus for every friend who joins via your invite link.</Typography>
+          <Box className="referral-link-container" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+            <input type="text" value={referralData.referralLink} readOnly style={{ flexGrow: 1, marginRight: '10px' }} />
+            <Button variant="outlined" color="primary" onClick={() => navigator.clipboard.writeText(referralData.referralLink)}>
+              Copy Link
+            </Button>
+          </Box>
+          <Box className="social-buttons" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <Button variant="contained" color="primary" onClick={shareReferral} style={{ marginRight: '10px' }}>
               WhatsApp
             </Button>
-          </div>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleShareClose} color="secondary">Close</Button>
@@ -195,7 +197,7 @@ const Dashboard = () => {
 
       {/* WhatsApp Chat Icon */}
       <a
-        href={`https://wa.me/+918904967001?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Replace with the actual WhatsApp number
+        href={`https://wa.me/?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Include the referral link in the WhatsApp message
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
