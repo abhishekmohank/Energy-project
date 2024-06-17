@@ -4,6 +4,9 @@
 /* Apply Roboto font to the entire dashboard */
 body {
   font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9; /* Light background color */
+  margin: 0;
+  padding: 0;
 }
 
 /* Basic styling for the header */
@@ -31,7 +34,7 @@ body {
 
 .signout-button {
   background-color: white;
-  color: rgb(255, 0, 0);
+  color: #f44336;
   margin-top: 10px;
   padding: 10px 20px;
   border-radius: 5px;
@@ -41,8 +44,30 @@ body {
 }
 
 .signout-button:hover {
-  background-color: #fd0000;
+  background-color: #d32f2f;
   color: white;
+}
+
+/* Styling for the share button */
+.share-button {
+  background-color: white;
+  color: #f44336;
+  margin-top: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.share-button:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+
+/* Add margin to the referral icon */
+.referral-icon {
+  margin-left: 10px; /* Adjust this value as needed to move the icon to the right */
 }
 
 /* Styling for the containers holding metrics and information */
@@ -51,7 +76,7 @@ body {
 }
 
 /* Styling for individual metric boxes */
-.metric-box {  
+.metric-box {
   text-align: center;
   padding: 20px;
   background-color: #ffffff; /* White background */
@@ -128,24 +153,24 @@ body {
 /* Media queries for responsive design */
 @media (min-width: 600px) {
   .header {
-      flex-direction: row;
-      justify-content: space-between;
-      text-align: left;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
   }
 
   .header-title {
-      margin: 0;
+    margin: 0;
   }
 
   .signout-button {
-      width: auto;
-      margin-top: 0;
+    width: auto;
+    margin-top: 0;
   }
 
   .metrics-container .metric-box, .info-container .info-box {
     margin-bottom: 20px;
   }
-  
+
   .info-section {
     flex-direction: row;
   }
@@ -178,4 +203,8 @@ body {
   width: 60%;
   height: 60%;
   object-fit: contain; /* Ensure the image fits within the container */
+}
+
+.referral-icon {
+  margin-left: 10px; /* Adjust this value as needed to move the icon to the right */
 }
