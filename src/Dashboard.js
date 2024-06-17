@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import PowerIcon from '@mui/icons-material/Power';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import './Dashboard.css'; // Import the CSS file for styling
-import Logo from './logo.png'; // Import your logo
-import GiftIcon from './gift-icon.png'; // Import the gift icon
+import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import './Dashboard.css';
 
 const Dashboard = () => {
-  // State to store dashboard data
   const [dashboardData, setDashboardData] = useState({
     pvVoltage: '',
     pvCurrent: '',
@@ -17,8 +13,12 @@ const Dashboard = () => {
     acCurrent: '',
     acPower: '',
     currentPvPower: '',
+    currentAcOutput: '',
+    totalOperationTime: '',
+    inverterTemperature: '',
     productionToday: '',
     productionThisMonth: '',
+    productionThisYear: '',
     lifetimeProduction: '',
     plantType: '',
     onGridDate: '',
@@ -36,104 +36,143 @@ const Dashboard = () => {
     selfConsumptionRatio: '',
   });
 
-  // State to handle loading state
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // State to handle share popup visibility
-  const [sharePopupOpen, setSharePopupOpen] = useState(false);
+  const fetchData = useCallback(async () => {
+    try {
+      const sessionToken = localStorage.getItem('session_token');
+      const phoneNumber = localStorage.getItem('phone_number'); // Store phone number in localStorage during login
+      const response = await axios.get('http://localhost:5001/api/dashboard', {
+        headers: {
+          'Authorization': sessionToken,
+          'Phone-Number': phoneNumber
+        }
+      });
+      const data = response.data;
 
-  // State to store referral link and code
-  const [referralData, setReferralData] = useState({
-    referralLink: '',
-    referralCode: ''
-  });
-
-  // Fetch data from backend when component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/dashboard');
-        setDashboardData(response.data);
+      if (response.status === 401) {
+        setError(data.error);
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        setLoading(false);
+        return;
       }
-    };
 
+      setDashboardData({
+        pvVoltage: data.Vpv1,
+        pvCurrent: data.Ipv1,
+        pvPower: data.Pac,
+        acVoltage: data.Vgrid_PhaseA,
+        acCurrent: data.Igrid_PhaseA,
+        acPower: data.Pac,
+        currentPvPower: data.Pac,
+        currentAcOutput: data.PmeterTotal,
+        totalOperationTime: data.TimeTotal,
+        inverterTemperature: data.Temperature1,
+        productionToday: data.Eday,
+        productionThisMonth: data.productionThisMonth, // Updated field
+        productionThisYear: 'N/A',
+        lifetimeProduction: data.Etotal,
+        plantType: data.ModelType,
+        onGridDate: 'N/A',
+        totalInstalledCapacity: 'N/A',
+        address: 'N/A',
+        deviceStatus: data.WorkStatus,
+        deviceName: 'N/A',
+        serialNumber: data.INV_SN,
+        deviceType: data.ModelType,
+        ratedPower: 'N/A',
+        communicationMode: 'N/A',
+        lastUpdated: data.CreationDate,
+        pvGeneration: data.pvGeneration,
+        selfConsumption: data.selfConsumption,
+        selfConsumptionRatio: data.selfConsumptionRatio,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setError('Your number is not linked to any device. Please try another number.');
+      } else if (error.response && error.response.status === 401) {
+        setError(error.response.data.error);
+      } else {
+        console.error('Error fetching dashboard data:', error.message);
+        setError('Error fetching dashboard data');
+      }
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
     fetchData();
-  }, []);
+    const interval = setInterval(fetchData, 15000); // Reduced frequency
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
-  useEffect(() => {
-    const fetchReferralData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/referral');
-        setReferralData(response.data);
-      } catch (error) {
-        console.error('Error fetching referral data:', error);
-      }
-    };
-
-    fetchReferralData();
-  }, []);
-
-  // Function to handle missing values
-  const handleMissingValue = (value) => {
-    return value !== '' && value !== null && value !== undefined ? value : '--';
+  const handleSignOut = () => {
+    // Clear session data
+    localStorage.removeItem('session_token');
+    localStorage.removeItem('phone_number');
+    // Redirect to login page
+    window.location.href = '/';
   };
 
-  // Show loading spinner while data is being fetched
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <CircularProgress />
+      </div>
+    );
   }
 
-  // Function to open share popup
-  const handleShareClick = () => {
-    setSharePopupOpen(true);
-  };
-
-  // Function to close share popup
-  const handleShareClose = () => {
-    setSharePopupOpen(false);
-  };
-
-  // Function to share referral message on WhatsApp
-  const shareReferral = () => {
-    const message = encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`);
-    const whatsappUrl = `https://wa.me/?text=${message}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  if (error) {
+    return (
+      <Container className="error-container">
+        <Paper className="error-message" elevation={3}>
+          <ErrorOutlineIcon color="error" style={{ fontSize: 60 }} />
+          <Typography variant="h5" color="error" gutterBottom>
+            {error}
+          </Typography>
+          <Typography variant="body1">
+            {error === 'Your session has timed out. Please log in again.' ? 'Your session has expired. Please log in again to continue.' : 'Please verify your phone number before accessing the dashboard.'}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.location.href = '/'}
+            style={{ marginTop: '20px' }}
+          >
+            Go to Login
+          </Button>
+        </Paper>
+      </Container>
+    );
+  }
 
   return (
     <Container className="container">
-      {/* Header section containing logo, title, and share button */}
       <Box className="header">
-        <div className="logo-container">
-          <img src={Logo} alt="Logo" className="logo" />
-          <Typography variant="h6" className="logo-name">Your Organization Name</Typography>
-        </div>
+        <img src="logo.png" alt="Atria Power" className="logo" />
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
         </Typography>
-        <div className="header-buttons">
-          <Button variant="contained" color="primary" className="share-button" onClick={handleShareClick}>
-            Refer a Friend!
-          </Button>
-          <button className="signout-button">Sign Out</button>
-        </div>
+        <Button variant="contained" className="signout-button" onClick={handleSignOut}>
+          Sign Out
+        </Button>
       </Box>
 
-      {/* Grid container for displaying the metrics */}
       <Grid container spacing={3} className="metrics-container">
         {[
-          { label: "Current PV Power", value: handleMissingValue(dashboardData.currentPvPower) + " kW", icon: <PowerIcon className="metric-icon" /> },
-          { label: "Production Today", value: handleMissingValue(dashboardData.productionToday) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
-          { label: "Production - This Month", value: handleMissingValue(dashboardData.productionThisMonth) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
-          { label: "Lifetime Production", value: handleMissingValue(dashboardData.lifetimeProduction) + " kWh", icon: <WbSunnyIcon className="metric-icon" /> },
+          { label: "Current PV Power", value: dashboardData.currentPvPower + " kW" },
+          { label: "Current AC Output", value: dashboardData.currentAcOutput + " kW" },
+          { label: "Total Operation Time", value: dashboardData.totalOperationTime + " hrs" },
+          { label: "Inverter Temperature", value: dashboardData.inverterTemperature + " °C" },
+          { label: "Production Today", value: dashboardData.productionToday + " kWh" },
+          { label: "Production - This Month", value: dashboardData.productionThisMonth + " kWh" },
+          { label: "Production - This Year", value: dashboardData.productionThisYear + " kWh" },
+          { label: "Lifetime Production", value: dashboardData.lifetimeProduction + " kWh" },
         ].map((metric, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Paper className="metric-box">
-              {metric.icon}
               <Typography variant="h6">{metric.value}</Typography>
               <Typography variant="body1">{metric.label}</Typography>
             </Paper>
@@ -141,69 +180,47 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      {/* Flex container for displaying performance and general information */}
-      <Box className="info-section">
-        <Paper className="info-box">
-          <Typography variant="h6">General Information</Typography>
-          <Typography variant="body2">Last updated: {handleMissingValue(dashboardData.lastUpdated)}</Typography>
-          <Typography variant="body1" className="info-label">Plant type: {handleMissingValue(dashboardData.plantType)}</Typography>
-          <Typography variant="body1" className="info-label">On-Grid Date: {handleMissingValue(dashboardData.onGridDate)}</Typography>
-          <Typography variant="body1" className="info-label">Total Installed Capacity: {handleMissingValue(dashboardData.totalInstalledCapacity)}</Typography>
-          <Typography variant="body1" className="info-label">Address: {handleMissingValue(dashboardData.address)}</Typography>
-          <Typography variant="body1" className="info-label">Device Status: {handleMissingValue(dashboardData.deviceStatus)}</Typography>
-          <Typography variant="body1" className="info-label">Device Name: {handleMissingValue(dashboardData.deviceName)}</Typography>
-          <Typography variant="body1" className="info-label">Serial Number: {handleMissingValue(dashboardData.serialNumber)}</Typography>
-          <Typography variant="body1" className="info-label">Device Type: {handleMissingValue(dashboardData.deviceType)}</Typography>
-          <Typography variant="body1" className="info-label">Rated Power: {handleMissingValue(dashboardData.ratedPower)}</Typography>
-          <Typography variant="body1" className="info-label">Communication Mode: {handleMissingValue(dashboardData.communicationMode)}</Typography>
-        </Paper>
+      <Grid container spacing={3} className="info-container">
+        <Grid item xs={12} sm={6}>
+          <Paper className="info-box">
+            <Typography variant="h6">Performance Metrics</Typography>
+            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+            <Typography variant="body1">PV Voltage(V): {dashboardData.pvVoltage}</Typography>
+            <Typography variant="body1">PV Current(A): {dashboardData.pvCurrent}</Typography>
+            <Typography variant="body1">PV Power(kW): {dashboardData.pvPower}</Typography>
+            <Typography variant="body1">AC Voltage(V): {dashboardData.acVoltage}</Typography>
+            <Typography variant="body1">AC Current(A): {dashboardData.acCurrent}</Typography>
+            <Typography variant="body1">AC Power(kW): {dashboardData.acPower}</Typography>
+          </Paper>
+        </Grid>
 
-        {/* Electricity Statistics Data */}
-        <Paper className="info-box">
-          <Typography variant="h6">Electricity Statistics Data</Typography>
-          <Typography variant="body2">Last updated: {handleMissingValue(dashboardData.lastUpdated)}</Typography>
-          <Typography variant="body1" className="info-label">PV Generation: {handleMissingValue(dashboardData.pvGeneration)} kWh</Typography>
-          <Typography variant="body1" className="info-label">Self Consumption: {handleMissingValue(dashboardData.selfConsumption)} kWh</Typography>
-          <Typography variant="body1" className="info-label">Self Consumption Ratio: {handleMissingValue(dashboardData.selfConsumptionRatio)} %</Typography>
-        </Paper>
-      </Box>
+        <Grid item xs={12} sm={6}>
+          <Paper className="info-box">
+            <Typography variant="h6">General Information</Typography>
+            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+            <Typography variant="body1">Plant type: {dashboardData.plantType}</Typography>
+            <Typography variant="body1">On-Grid Date: {dashboardData.onGridDate}</Typography>
+            <Typography variant="body1">Total Installed Capacity: {dashboardData.totalInstalledCapacity}</Typography>
+            <Typography variant="body1">Address: {dashboardData.address}</Typography>
+            <Typography variant="body1">Device Status: {dashboardData.deviceStatus}</Typography>
+            <Typography variant="body1">Device Name: {dashboardData.deviceName}</Typography>
+            <Typography variant="body1">Serial Number: {dashboardData.serialNumber}</Typography>
+            <Typography variant="body1">Device Type: {dashboardData.deviceType}</Typography>
+            <Typography variant="body1">Rated Power: {dashboardData.ratedPower}</Typography>
+            <Typography variant="body1">Communication Mode: {dashboardData.communicationMode}</Typography>
+          </Paper>
+        </Grid>
 
-      {/* Share Popup */}
-      <Dialog open={sharePopupOpen} onClose={handleShareClose}>
-        <DialogTitle>
-          <div className="referral-dialog-title" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={GiftIcon} alt="Gift" style={{ marginRight: '10px' }} />
-            <Typography variant="h6">Invite friends. Get free Plus.</Typography>
-          </div>
-        </DialogTitle>
-        <DialogContent className="referral-dialog-content">
-          <Typography variant="body2">Get one week of free Duolingo Plus for every friend who joins via your invite link.</Typography>
-          <Box className="referral-link-container" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-            <input type="text" value={referralData.referralLink} readOnly style={{ flexGrow: 1, marginRight: '10px' }} />
-            <Button variant="outlined" color="primary" onClick={() => navigator.clipboard.writeText(referralData.referralLink)}>
-              Copy Link
-            </Button>
-          </Box>
-          <Box className="social-buttons" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <Button variant="contained" color="primary" onClick={shareReferral} style={{ marginRight: '10px' }}>
-              WhatsApp
-            </Button>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleShareClose} color="secondary">Close</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* WhatsApp Chat Icon */}
-      <a
-        href={`https://wa.me/?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Include the referral link in the WhatsApp message
-        className="whatsapp-float"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img src="flat-whatsapp-icon.png" alt="WhatsApp" className="whatsapp-icon" />
-      </a>
+        <Grid item xs={12} sm={6}>
+          <Paper className="info-box">
+            <Typography variant="h6">Electricity Statistics Data</Typography>
+            <Typography variant="body2">Last updated: {dashboardData.lastUpdated}</Typography>
+            <Typography variant="body1">PV Generation: {dashboardData.pvGeneration} kWh</Typography>
+            <Typography variant="body1">Self Consumption: {dashboardData.selfConsumption} kWh</Typography>
+            <Typography variant="body1">Self Consumption Ratio: {dashboardData.selfConsumptionRatio} %</Typography>
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 };
