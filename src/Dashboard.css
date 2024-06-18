@@ -1,43 +1,137 @@
+/* Import the Roboto font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Apply Roboto font to the entire dashboard */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9; /* Light background color */
+  margin: 0;
+  padding: 0;
+}
+
+/* Define keyframes for animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply animations to header elements */
+.header {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Apply animations to buttons */
+.signout-button, .share-button {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Apply animations to metrics and info boxes */
+.metric-box, .info-box {
+  animation: scaleUp 0.6s ease-out;
+}
+
+/* Apply animations to container sections */
+.metrics-container, .info-container {
+  animation: slideIn 0.6s ease-out;
+}
+
 /* Basic styling for the header */
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #d32f2f; /* Aesthetic shade of red */
-  padding: 20px;
+  background-color: #f44336; /* Modern shade of red */
+  padding: 10px 20px;
   color: white;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
   margin-bottom: 20px;
 }
 
-/* Styling for the header title */
 .header-title {
   margin: 10px 0;
-  font-size: 24px;
+  font-size: 24px; /* Add missing font-size */
   font-weight: bold;
 }
 
-/* Styling for the logo */
 .logo {
   height: 50px;
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Add margin bottom */
 }
 
-/* Styling for the sign-out button */
 .signout-button {
   background-color: white;
-  color: #d32f2f;
+  color: #f44336;
   margin-top: 10px;
-  border-radius: 20px;
   padding: 10px 20px;
+  border-radius: 20px; /* Adjust to larger radius */
+  border: none;
+  cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .signout-button:hover {
   background-color: #d32f2f;
   color: white;
+}
+
+/* Styling for the share button */
+.share-button {
+  background-color: white;
+  color: #f44336;
+  margin-top: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-right: 10px; /* Add gap between share and sign out button */
+}
+
+.share-button:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+
+/* Container for header buttons */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Add margin to the referral icon */
+.referral-icon {
+  margin-left: 10px; /* Adjust this value as needed to move the icon to the right */
 }
 
 /* Styling for the containers holding metrics and information */
@@ -50,25 +144,76 @@
 .metric-box {
   text-align: center;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background-color: #f5f5f5;
-  margin: 10px;
+  background-color: #ffffff; /* White background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 10px; /* Add margin for spacing */
+  transition: transform 0.3s ease;
+}
+
+.metric-box:hover {
+  transform: translateY(-5px);
+}
+
+.metric-box h6 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 700; /* Make font bold */
+}
+
+.metric-box p {
+  margin: 0;
+  color: #555;
+  font-weight: 500; /* Semi-bold font weight */
+}
+
+.metric-icon {
+  font-size: 40px; /* Larger icon size */
+  margin-bottom: 10px;
+  color: #f44336; /* Icon color matching the header */
 }
 
 /* Styling for individual info boxes */
 .info-box {
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background-color: #f5f5f5;
-  margin: 10px;
+  background-color: #ffffff; /* White background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 10px; /* Add margin for spacing */
+}
+
+.info-box h6 {
+  font-size: 20px;
+  font-weight: 700; /* Bold font weight */
+  margin-bottom: 10px;
+}
+
+.info-box p {
+  font-size: 16px;
+  font-weight: 500; /* Semi-bold font weight */
+  color: #333;
+}
+
+.info-box .info-label {
+  font-weight: 700; /* Bold font weight */
 }
 
 /* Ensure container takes up full width of the screen */
 .container {
   max-width: 100%;
-  padding: 20px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Flex container for performance metrics and general information */
+.info-section {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.info-box {
+  flex: 1;
 }
 
 /* Styling for loading container */
@@ -111,4 +256,83 @@
     width: auto;
     margin-top: 0;
   }
+
+  .metrics-container .metric-box,
+  .info-container .info-box {
+    margin-bottom: 20px;
+  }
+
+  .info-section {
+    flex-direction: row;
+  }
+}
+
+/* WhatsApp floating button styling */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  box-shadow: 2px 2px 3px #999;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-float:hover {
+  background-color: #128c7e;
+}
+
+.whatsapp-float img.whatsapp-icon {
+  width: 60%;
+  height: 60%;
+  object-fit: contain; /* Ensure the image fits within the container */
+}
+
+/* Styles for the referral dialog */
+.referral-dialog-title {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.referral-dialog-title img {
+  margin-right: 10px;
+}
+
+.referral-dialog-content {
+  text-align: center;
+}
+
+.referral-dialog-content .referral-link-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.referral-dialog-content .copy-link-button {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.referral-dialog-content .social-buttons {
+  margin-top: 20px;
+}
+
+.referral-dialog-content .social-buttons button {
+  margin: 0 10px;
 }
