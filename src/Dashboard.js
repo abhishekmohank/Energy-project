@@ -39,14 +39,7 @@ const Dashboard = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const sessionToken = localStorage.getItem('session_token');
-      const phoneNumber = localStorage.getItem('phone_number'); // Store phone number in localStorage during login
-      const response = await axios.get('http://localhost:5001/api/dashboard', {
-        headers: {
-          'Authorization': sessionToken,
-          'Phone-Number': phoneNumber
-        }
-      });
+      const response = await axios.get('${process.env.REACT_APP_API_URL}/api/dashboard');
       const data = response.data;
 
       if (response.status === 401) {
@@ -79,7 +72,7 @@ const Dashboard = () => {
       setLoading(false);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        setError('Your number is not linked to any device. Please try another number.');
+        setError('Device not found. Please try another one.');
       } else if (error.response && error.response.status === 401) {
         setError(error.response.data.error);
       } else {
@@ -99,7 +92,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchReferralData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/referral');
+        const response = await axios.get('${process.env.REACT_APP_API_URL}/api/referral');
         setReferralData(response.data);
       } catch (error) {
         console.error('Error fetching referral data:', error);
@@ -110,9 +103,6 @@ const Dashboard = () => {
   }, []);
 
   const handleSignOut = () => {
-    // Clear session data
-    localStorage.removeItem('session_token');
-    localStorage.removeItem('phone_number');
     // Redirect to login page
     window.location.href = '/';
   };
@@ -151,7 +141,7 @@ const Dashboard = () => {
             {error}
           </Typography>
           <Typography variant="body1">
-            {error === 'Your session has timed out. Please log in again.' ? 'Your session has expired. Please log in again to continue.' : 'Please verify your phone number before accessing the dashboard.'}
+            {error === 'Your session has timed out. Please log in again.' ? 'Your session has expired. Please log in again to continue.' : 'Please verify your device before accessing the dashboard.'}
           </Typography>
           <Button
             variant="contained"
