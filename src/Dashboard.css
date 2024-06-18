@@ -9,6 +9,60 @@ body {
   padding: 0;
 }
 
+/* Define keyframes for animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply animations to header elements */
+.header {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Apply animations to buttons */
+.signout-button, .share-button {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Apply animations to metrics and info boxes */
+.metric-box, .info-box {
+  animation: scaleUp 0.6s ease-out;
+}
+
+/* Apply animations to container sections */
+.metrics-container, .info-container {
+  animation: slideIn 0.6s ease-out;
+}
+
 /* Basic styling for the header */
 .header {
   display: flex;
@@ -25,11 +79,13 @@ body {
 
 .header-title {
   margin: 10px 0;
-  font-weight: bold; /* Bold font weight */
+  font-size: 24px; /* Add missing font-size */
+  font-weight: bold;
 }
 
 .logo {
   height: 50px;
+  margin-bottom: 10px; /* Add margin bottom */
 }
 
 .signout-button {
@@ -37,7 +93,7 @@ body {
   color: #f44336;
   margin-top: 10px;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 20px; /* Adjust to larger radius */
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -79,7 +135,8 @@ body {
 }
 
 /* Styling for the containers holding metrics and information */
-.metrics-container, .info-container {
+.metrics-container,
+.info-container {
   margin-top: 20px;
 }
 
@@ -90,6 +147,7 @@ body {
   background-color: #ffffff; /* White background */
   border-radius: 10px; /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 10px; /* Add margin for spacing */
   transition: transform 0.3s ease;
 }
 
@@ -121,9 +179,9 @@ body {
   background-color: #ffffff; /* White background */
   border-radius: 10px; /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 10px; /* Add margin for spacing */
 }
 
-/* Make performance metrics and general information bold and change font */
 .info-box h6 {
   font-size: 20px;
   font-weight: 700; /* Bold font weight */
@@ -158,6 +216,30 @@ body {
   flex: 1;
 }
 
+/* Styling for loading container */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Styling for error container */
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.error-message {
+  padding: 40px;
+  text-align: center;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Media queries for responsive design */
 @media (min-width: 600px) {
   .header {
@@ -175,7 +257,8 @@ body {
     margin-top: 0;
   }
 
-  .metrics-container .metric-box, .info-container .info-box {
+  .metrics-container .metric-box,
+  .info-container .info-box {
     margin-bottom: 20px;
   }
 
@@ -253,4 +336,3 @@ body {
 .referral-dialog-content .social-buttons button {
   margin: 0 10px;
 }
-

@@ -1,25 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Container, Grid, Paper, Typography, Box, Button, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import PowerIcon from '@mui/icons-material/Power';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import './Dashboard.css'; // Import the CSS file for styling
+import './Dashboard.css';
 import Logo from './logo.png'; // Import your logo
 import GiftIcon from './gift-icon.png'; // Import the gift icon
 
 const Dashboard = () => {
-  // State to store dashboard data
   const [dashboardData, setDashboardData] = useState({
-    pvVoltage: '',
-    pvCurrent: '',
-    pvPower: '',
-    acVoltage: '',
-    acCurrent: '',
-    acPower: '',
     currentPvPower: '',
     productionToday: '',
     productionThisMonth: '',
     lifetimeProduction: '',
+    lastUpdated: '',
     plantType: '',
     onGridDate: '',
     totalInstalledCapacity: '',
@@ -30,39 +24,77 @@ const Dashboard = () => {
     deviceType: '',
     ratedPower: '',
     communicationMode: '',
-    lastUpdated: '',
     pvGeneration: '',
     selfConsumption: '',
     selfConsumptionRatio: '',
   });
 
-  // State to handle loading state
   const [loading, setLoading] = useState(true);
-
-  // State to handle share popup visibility
+  const [error, setError] = useState('');
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
-
-  // State to store referral link and code
   const [referralData, setReferralData] = useState({
     referralLink: '',
     referralCode: ''
   });
 
-  // Fetch data from backend when component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/dashboard');
-        setDashboardData(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        setLoading(false);
-      }
-    };
+  const fetchData = useCallback(async () => {
+    try {
+      const sessionToken = localStorage.getItem('session_token');
+      const phoneNumber = localStorage.getItem('phone_number'); // Store phone number in localStorage during login
+      const response = await axios.get('http://localhost:5001/api/dashboard', {
+        headers: {
+          'Authorization': sessionToken,
+          'Phone-Number': phoneNumber
+        }
+      });
+      const data = response.data;
 
-    fetchData();
+      if (response.status === 401) {
+        setError(data.error);
+        setLoading(false);
+        return;
+      }
+
+      setDashboardData({
+        currentPvPower: data.Pac,
+        productionToday: data.Eday,
+        productionThisMonth: data.productionThisMonth,
+        lifetimeProduction: data.Etotal,
+        lastUpdated: data.CreationDate,
+        plantType: data.ModelType,
+        onGridDate: 'N/A',
+        totalInstalledCapacity: 'N/A',
+        address: 'N/A',
+        deviceStatus: data.WorkStatus,
+        deviceName: 'N/A',
+        serialNumber: data.INV_SN,
+        deviceType: data.ModelType,
+        ratedPower: 'N/A',
+        communicationMode: 'N/A',
+        pvGeneration: data.pvGeneration,
+        selfConsumption: data.selfConsumption,
+        selfConsumptionRatio: data.selfConsumptionRatio,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setError('Your number is not linked to any device. Please try another number.');
+      } else if (error.response && error.response.status === 401) {
+        setError(error.response.data.error);
+      } else {
+        console.error('Error fetching dashboard data:', error.message);
+        setError('Error fetching dashboard data');
+      }
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 15000); // Reduced frequency
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   useEffect(() => {
     const fetchReferralData = async () => {
@@ -77,40 +109,69 @@ const Dashboard = () => {
     fetchReferralData();
   }, []);
 
-  // Function to handle missing values
-  const handleMissingValue = (value) => {
-    return value !== '' && value !== null && value !== undefined ? value : '--';
+  const handleSignOut = () => {
+    // Clear session data
+    localStorage.removeItem('session_token');
+    localStorage.removeItem('phone_number');
+    // Redirect to login page
+    window.location.href = '/';
   };
 
-  // Show loading spinner while data is being fetched
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // Function to open share popup
   const handleShareClick = () => {
     setSharePopupOpen(true);
   };
 
-  // Function to close share popup
   const handleShareClose = () => {
     setSharePopupOpen(false);
   };
 
-  // Function to share referral message on WhatsApp
   const shareReferral = () => {
     const message = encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`);
     const whatsappUrl = `https://wa.me/?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
 
+  const handleMissingValue = (value) => {
+    return value !== '' && value !== null && value !== undefined ? value : '--';
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="error-container">
+        <Paper className="error-message" elevation={3}>
+          <Typography variant="h5" color="error" gutterBottom>
+            {error}
+          </Typography>
+          <Typography variant="body1">
+            {error === 'Your session has timed out. Please log in again.' ? 'Your session has expired. Please log in again to continue.' : 'Please verify your phone number before accessing the dashboard.'}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.location.href = '/'}
+            style={{ marginTop: '20px' }}
+          >
+            Go to Login
+          </Button>
+        </Paper>
+      </Container>
+    );
+  }
+
   return (
     <Container className="container">
-      {/* Header section containing logo, title, and share button */}
       <Box className="header">
         <div className="logo-container">
           <img src={Logo} alt="Logo" className="logo" />
-          <Typography variant="h6" className="logo-name">Your Organization Name</Typography>
+          <Typography variant="h6" className="logo-name"> </Typography>
         </div>
         <Typography variant="h4" component="h1" className="header-title">
           ATRIA UNIVERSITY-ARPL-2024-24-ABP-01
@@ -119,11 +180,10 @@ const Dashboard = () => {
           <Button variant="contained" color="primary" className="share-button" onClick={handleShareClick}>
             Refer a Friend!
           </Button>
-          <button className="signout-button">Sign Out</button>
+          <button className="signout-button" onClick={handleSignOut}>Sign Out</button>
         </div>
       </Box>
 
-      {/* Grid container for displaying the metrics */}
       <Grid container spacing={3} className="metrics-container">
         {[
           { label: "Current PV Power", value: handleMissingValue(dashboardData.currentPvPower) + " kW", icon: <PowerIcon className="metric-icon" /> },
@@ -141,7 +201,6 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      {/* Flex container for displaying performance and general information */}
       <Box className="info-section">
         <Paper className="info-box">
           <Typography variant="h6">General Information</Typography>
@@ -158,46 +217,35 @@ const Dashboard = () => {
           <Typography variant="body1" className="info-label">Communication Mode: {handleMissingValue(dashboardData.communicationMode)}</Typography>
         </Paper>
 
-        {/* Electricity Statistics Data */}
         <Paper className="info-box">
           <Typography variant="h6">Electricity Statistics Data</Typography>
-          <Typography variant="body2">Last updated: {handleMissingValue(dashboardData.lastUpdated)}</Typography>
           <Typography variant="body1" className="info-label">PV Generation: {handleMissingValue(dashboardData.pvGeneration)} kWh</Typography>
           <Typography variant="body1" className="info-label">Self Consumption: {handleMissingValue(dashboardData.selfConsumption)} kWh</Typography>
-          <Typography variant="body1" className="info-label">Self Consumption Ratio: {handleMissingValue(dashboardData.selfConsumptionRatio)} %</Typography>
+          <Typography variant="body1" className="info-label">Self Consumption Ratio: {handleMissingValue(dashboardData.selfConsumptionRatio)}%</Typography>
         </Paper>
       </Box>
 
-      {/* Share Popup */}
       <Dialog open={sharePopupOpen} onClose={handleShareClose}>
         <DialogTitle>
-          <div className="referral-dialog-title" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={GiftIcon} alt="Gift" style={{ marginRight: '10px' }} />
-            <Typography variant="h6">Invite friends. Get free Plus.</Typography>
-          </div>
+          <img src={GiftIcon} alt="Gift Icon" className="popup-icon" />
+          Share and Earn!
         </DialogTitle>
-        <DialogContent className="referral-dialog-content">
-          <Typography variant="body2">Get one week of free Duolingo Plus for every friend who joins via your invite link.</Typography>
-          <Box className="referral-link-container" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-            <input type="text" value={referralData.referralLink} readOnly style={{ flexGrow: 1, marginRight: '10px' }} />
-            <Button variant="outlined" color="primary" onClick={() => navigator.clipboard.writeText(referralData.referralLink)}>
-              Copy Link
-            </Button>
-          </Box>
-          <Box className="social-buttons" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <Button variant="contained" color="primary" onClick={shareReferral} style={{ marginRight: '10px' }}>
-              WhatsApp
-            </Button>
-          </Box>
+        <DialogContent>
+          <Typography variant="body1">Share your referral link to earn rewards:</Typography>
+          <Typography variant="body2" className="referral-link">{referralData.referralLink}</Typography>
+          <Typography variant="body2">Referral Code: {referralData.referralCode}</Typography>
+          <Button variant="contained" color="primary" onClick={shareReferral} style={{ marginTop: '20px' }}>
+            Share via WhatsApp
+          </Button>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleShareClose} color="secondary">Close</Button>
+          <Button onClick={handleShareClose} color="primary">Close</Button>
         </DialogActions>
       </Dialog>
 
       {/* WhatsApp Chat Icon */}
       <a
-        href={`https://wa.me/?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Include the referral link in the WhatsApp message
+        href={`https://wa.me/1234567890?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Replace 1234567890 with the specific phone number
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
