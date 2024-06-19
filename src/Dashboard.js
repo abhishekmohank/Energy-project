@@ -4,8 +4,8 @@ import { Container, Grid, Paper, Typography, Box, Button, CircularProgress, Dial
 import PowerIcon from '@mui/icons-material/Power';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import './Dashboard.css';
-import Logo from './logo.png'; // Import your logo
-import GiftIcon from './gift-icon.png'; // Import the gift icon
+import Logo from './logo.png';
+import GiftIcon from './gift-icon.png';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -39,7 +39,7 @@ const Dashboard = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get('${process.env.REACT_APP_API_URL}/api/dashboard');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/dashboard`);
       const data = response.data;
 
       if (response.status === 401) {
@@ -71,12 +71,12 @@ const Dashboard = () => {
 
       setLoading(false);
     } catch (error) {
+      console.error('Error fetching dashboard data:', error.response ? error.response.data : error.message);
       if (error.response && error.response.status === 404) {
         setError('Device not found. Please try another one.');
       } else if (error.response && error.response.status === 401) {
         setError(error.response.data.error);
       } else {
-        console.error('Error fetching dashboard data:', error.message);
         setError('Error fetching dashboard data');
       }
       setLoading(false);
@@ -85,14 +85,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 15000); // Reduced frequency
+    const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
   useEffect(() => {
     const fetchReferralData = async () => {
       try {
-        const response = await axios.get('${process.env.REACT_APP_API_URL}/api/referral');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/referral`);
         setReferralData(response.data);
       } catch (error) {
         console.error('Error fetching referral data:', error);
@@ -103,7 +103,6 @@ const Dashboard = () => {
   }, []);
 
   const handleSignOut = () => {
-    // Redirect to login page
     window.location.href = '/';
   };
 
@@ -233,9 +232,8 @@ const Dashboard = () => {
         </DialogActions>
       </Dialog>
 
-      {/* WhatsApp Chat Icon */}
       <a
-        href={`https://wa.me/1234567890?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`} // Replace 1234567890 with the specific phone number
+        href={`https://wa.me/1234567890?text=${encodeURIComponent(`Join using my referral link: ${referralData.referralLink}`)}`}
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
